@@ -5,23 +5,24 @@
  */
 package jsoncovertors;
 
-import entity.Reader;
+import entity.Customer;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 /**
  *
  * @author jvm
  */
-public class JsonReaderBuilder {
-    public JsonObject createJsonReader(Reader reader){
+public class JsonCustomerBuilder {
+    public JsonObject createJsonCustomer(Customer customer){
         JsonObjectBuilder job = Json.createObjectBuilder();
-        job.add("id", reader.getId())
-                .add("firstname", reader.getFirstname())
-                .add("lastname", reader.getLastname())
-                .add("phone", reader.getPhone())
-                .add("money", reader.getMoney());
+        job.add("id", customer.getId())
+                .add("firstname", customer.getFirstname())
+                .add("lastname", customer.getLastname())
+                .add("phone", customer.getPhone())
+                .add("money", customer.getMoney());
         return job.build();
     }
 }

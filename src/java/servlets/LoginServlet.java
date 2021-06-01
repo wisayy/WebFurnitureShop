@@ -5,8 +5,8 @@
  */
 package servlets;
 
-import entity.Book;
-import entity.Reader;
+import entity.Furniture;
+import entity.Customer;
 import entity.Role;
 import entity.User;
 import entity.UserRoles;
@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import session.BookFacade;
+import session.FurnitureFacade;
 import session.CoverFacade;
 import session.HistoryFacade;
-import session.ReaderFacade;
+import session.CustomerFacade;
 import session.RoleFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
@@ -49,9 +49,9 @@ public class LoginServlet extends HttpServlet {
 @EJB
     private UserFacade userFacade;
 @EJB
-    private ReaderFacade readerFacade;
+    private CustomerFacade customerFacade;
 @EJB
-    private BookFacade bookFacade;
+    private FurnitureFacade bookFacade;
 @EJB private RoleFacade roleFacade;
 @EJB private UserRolesFacade userRolesFacade;
 @EJB private CoverFacade coverFacade;
@@ -67,9 +67,9 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
         if(userFacade.count() > 0) return;
         String salt = encryptPassword.createSalt();
         String password = encryptPassword.createHash("12345", salt);
-        Reader reader = new Reader("Juri", "Melnikov", "56569987",1000);
-        readerFacade.create(reader);
-        User user = new User("admin", password, salt, reader);
+        Customer customer = new Customer("Juri", "Melnikov", "56569987",1000);
+        customerFacade.create(customer);
+        User user = new User("admin", password, salt, customer);
         userFacade.create(user);
         Role role = new Role("ADMIN");
         roleFacade.create(role);
@@ -101,16 +101,16 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-        List<Book> purchasedBooks = null;
+        List<Furniture> purchasedBooks = null;
         HttpSession session = request.getSession(false);
         User user=null;
         if(session != null){
             user = (User) session.getAttribute("user");
-            List<Book> basketList = (List<Book>) session.getAttribute("basketList");
+            List<Furniture> basketList = (List<Furniture>) session.getAttribute("basketList");
             if(basketList != null){
                 request.setAttribute("basketListCount", basketList.size());
             }
-            if(user != null) purchasedBooks = historyFacade.findPurchasedBook(user.getReader());
+            if(user != null) purchasedBooks = historyFacade.findPurchasedFurniture(user.getCustomer());
         }
         
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
@@ -118,7 +118,7 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
         String path = request.getServletPath();
         switch (path) {
             case "/index":
-                List<Book> listBooks = bookFacade.findAll();
+                List<Furniture> listBooks = bookFacade.findAll();
                 request.setAttribute("listBooks", listBooks);
                 request.getRequestDispatcher(LoginServlet.pathToFile.getString("index")).forward(request, response);
                 break;
@@ -187,15 +187,15 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
                     break;
                 }
                 
-                Reader reader = new Reader(firstname, lastname, phone, money);
-                readerFacade.create(reader);
+                Customer customer = new Customer(firstname, lastname, phone, money);
+                customerFacade.create(customer);
                 salt = encryptPassword.createSalt();
                 encryptPwd = encryptPassword.createHash(password, salt);
-                user = new User(login, encryptPwd, salt, reader);
+                user = new User(login, encryptPwd, salt, customer);
                 userFacade.create(user);
                 //Здесь добавим роль пользователю.
-                Role roleReader = roleFacade.findByName("READER");
-                UserRoles userRoles = new UserRoles(user, roleReader);
+                Role roleCustomer = roleFacade.findByName("READER");
+                UserRoles userRoles = new UserRoles(user, roleCustomer);
                 userRolesFacade.create(userRoles);
                 request.setAttribute("info", 
                         "Читатель "+user.getLogin()+" добавлен"     

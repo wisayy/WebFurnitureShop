@@ -5,7 +5,7 @@
  */
 package jsonservlets;
 
-import entity.Reader;
+import entity.Customer;
 import entity.Role;
 import entity.User;
 import java.io.IOException;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import jsoncovertors.JsonUserBuilder;
 import servlets.LoginServlet;
-import session.BookFacade;
-import session.ReaderFacade;
+import session.FurnitureFacade;
+import session.CustomerFacade;
 import session.RoleFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
@@ -51,9 +51,9 @@ import tools.EncryptPassword;
 })
 public class AdminServletJson extends HttpServlet {
     @EJB private UserFacade userFacade;
-    @EJB private ReaderFacade readerFacade;
+    @EJB private CustomerFacade customerFacade;
     @EJB private UserRolesFacade userRolesFacade;
-    @EJB private BookFacade bookFacade;
+    @EJB private FurnitureFacade furnitureFacade;
     @EJB private RoleFacade roleFacade;
     
     @Inject EncryptPassword ep;
@@ -167,7 +167,7 @@ public class AdminServletJson extends HttpServlet {
                     .toString();
                 break;
             }
-            Reader editReader = editUser.getReader();
+            Customer editReader = editUser.getCustomer();
             editReader.setFirstname(firstname);
             editReader.setLastname(lastname);
             editReader.setMoney(money);
@@ -177,7 +177,7 @@ public class AdminServletJson extends HttpServlet {
                 password = ep.createHash(password, editUser.getSalt());
                 editUser.setPassword(password);
             }
-            readerFacade.edit(editReader);
+            customerFacade.edit(editReader);
             userFacade.edit(editUser);
             json = job.add("requestStatus", "true")
                       .add("info", "Профиль пользователя "+editUser.getLogin()+" изменен.")

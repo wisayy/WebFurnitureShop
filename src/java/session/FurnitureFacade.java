@@ -5,7 +5,7 @@
  */
 package session;
 
-import entity.Book;
+import entity.Furniture;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author jvm
  */
 @Stateless
-public class BookFacade extends AbstractFacade<Book> {
+public class FurnitureFacade extends AbstractFacade<Furniture> {
 
     @PersistenceContext(unitName = "WebBooksShoplPU")
     private EntityManager em;
@@ -26,12 +26,12 @@ public class BookFacade extends AbstractFacade<Book> {
         return em;
     }
 
-    public BookFacade() {
-        super(Book.class);
+    public FurnitureFacade() {
+        super(Furniture.class);
     }
-    public List<Book> findNotDiscountBook() {
+    public List<Furniture> findNotDiscountBook() {
         try {
-           return em.createQuery("SELECT book FROM Book book WHERE book.discount <= 0")
+           return em.createQuery("SELECT furniture FROM Furniture furniture WHERE furniture.discount <= 0")
                    .getResultList();
         } catch (Exception e) {
             return null;

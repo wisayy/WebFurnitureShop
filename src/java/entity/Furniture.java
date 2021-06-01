@@ -22,15 +22,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-public class Book implements Serializable{
+public class Furniture implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String author;
-    private Integer publishedYear;
-    private String isbn;
-    private int price;
+    private String kitchenName;
+    private String material;
+    private String width;
+    private String height;
+    private Integer price;
     @OneToOne
     private Cover cover;
     @OneToOne
@@ -42,84 +42,59 @@ public class Book implements Serializable{
     
     
 
-    public Book() {
+    public Furniture() {
     }
 
-    public Book(String name, String author, Integer publishedYear, String isbn, int price, Cover cover, Text text) {
-        this.name = name;
-        this.author = author;
-        this.publishedYear = publishedYear;
-        this.isbn = isbn;
+    public Furniture(String kitchenName, String material, String width, String height, Integer price, Cover cover, Text text) {
+        this.kitchenName = kitchenName;
+        this.material = material;
+        this.width = width;
+        this.height = height;
         this.price = price;
         this.cover = cover;
         this.text = text;
     }
-    
-    public Book(String name, String author, Integer publishedYear, String isbn, double price, Cover cover, Text text) {
-        this.name = name;
-        this.author = author;
-        this.publishedYear = publishedYear;
-        this.isbn = isbn;
-        this.setPriceDouble(price);
-        this.cover = cover;
-        this.text = text;
-    }
-    public Book(String name, String author, Integer publishedYear, String isbn, String price, Cover cover, Text text) {
-        this.name = name;
-        this.author = author;
-        this.publishedYear = publishedYear;
-        this.isbn = isbn;
+
+    public Furniture(String kitchenName, String material, String width, String height, String price, Cover cover, Text text) {
+        this.kitchenName = kitchenName;
+        this.material = material;
+        this.width = width;
+        this.height = height;
         this.setPriceStr(price);
         this.cover = cover;
         this.text = text;
     }
 
-    
-
-   
-
-    public String getName() {
-        return name;
+    public String getKitchenName() {
+        return kitchenName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setKitchenName(String kitchenName) {
+        this.kitchenName = kitchenName;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getMaterial() {
+        return material;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setMaterial(String material) {
+        this.material = material;
     }
 
-    public Integer getPublishedYear() {
-        return publishedYear;
+    public String getWidth() {
+        return width;
     }
 
-    public void setPublishedYear(Integer publishedYear) {
-        this.publishedYear = publishedYear;
+    public void setWidth(String width) {
+        this.width = width;
     }
 
-    public String getIsbn() {
-        return isbn;
+    public String getHeight() {
+        return height;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" 
-                + "id=" + id 
-                + ", name=" + name 
-                + ", author=" + author 
-                + ", publishedYear=" + publishedYear 
-                + ", isbn=" + isbn 
-                + ", price=" + price 
-                + '}';
+    public void setHeight(String height) {
+        this.height = height;
     }
 
     public Long getId() {
@@ -133,13 +108,15 @@ public class Book implements Serializable{
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.id);
-        hash = 41 * hash + Objects.hashCode(this.name);
-        hash = 41 * hash + Objects.hashCode(this.author);
-        hash = 41 * hash + Objects.hashCode(this.publishedYear);
-        hash = 41 * hash + Objects.hashCode(this.isbn);
+        hash = 53 * hash + Objects.hashCode(this.kitchenName);
+        hash = 53 * hash + Objects.hashCode(this.material);
+        hash = 53 * hash + Objects.hashCode(this.width);
+        hash = 53 * hash + Objects.hashCode(this.height);
+        hash = 53 * hash + this.price;
         return hash;
     }
+
+
 
     @Override
     public boolean equals(Object obj) {
@@ -152,24 +129,41 @@ public class Book implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Book other = (Book) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        final Furniture other = (Furniture) obj;
+        if (this.price != other.price) {
             return false;
         }
-        if (!Objects.equals(this.author, other.author)) {
+        if (this.discount != other.discount) {
             return false;
         }
-        if (!Objects.equals(this.isbn, other.isbn)) {
+        if (this.discountDuration != other.discountDuration) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.kitchenName, other.kitchenName)) {
             return false;
         }
-        if (!Objects.equals(this.publishedYear, other.publishedYear)) {
+        if (!Objects.equals(this.material, other.material)) {
+            return false;
+        }
+        if (!Objects.equals(this.width, other.width)) {
+            return false;
+        }
+        if (!Objects.equals(this.height, other.height)) {
+            return false;
+        }
+        if (!Objects.equals(this.cover, other.cover)) {
+            return false;
+        }
+        if (!Objects.equals(this.text, other.text)) {
+            return false;
+        }
+        if (!Objects.equals(this.discountDate, other.discountDate)) {
             return false;
         }
         return true;
     }
+
+
 
     public Cover getCover() {
         return cover;
@@ -239,5 +233,18 @@ public class Book implements Serializable{
     }
     
     
+    
+    @Override
+    public String toString() {
+        return "Book{" 
+                + "id=" + id 
+                + ", kitchenName=" + kitchenName 
+                + ", material=" + material 
+                + ", width=" + width 
+                + ", height=" + height 
+                + ", price=" + price 
+                + '}';
+    }
+
     
 }

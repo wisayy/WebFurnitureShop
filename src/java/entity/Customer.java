@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-public class Reader implements Serializable{
+public class Customer implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,22 +30,22 @@ public class Reader implements Serializable{
     private String phone;
     private int money;
 
-    public Reader() {
+    public Customer() {
     }
 
-    public Reader(String firstname, String lastname, String phone, int money) {
+    public Customer(String firstname, String lastname, String phone, int money) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
         this.money = money;
     }
-    public Reader(String firstname, String lastname, String phone, String money) {
+    public Customer(String firstname, String lastname, String phone, String money) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
         this.setMoney(money);
     }
-    public Reader(String firstname, String lastname, String phone, double money) {
+    public Customer(String firstname, String lastname, String phone, double money) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
@@ -79,7 +79,7 @@ public class Reader implements Serializable{
 
     @Override
     public String toString() {
-        return "Reader{" 
+        return "Customer{" 
                 + "id=" + id 
                 + ", firstname=" + firstname 
                 + ", lastname=" + lastname 
@@ -119,7 +119,7 @@ public class Reader implements Serializable{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Reader other = (Reader) obj;
+        final Customer other = (Customer) obj;
         if (!Objects.equals(this.firstname, other.firstname)) {
             return false;
         }

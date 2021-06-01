@@ -28,46 +28,35 @@ public class History implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne()
-    private Book book;
+    private Furniture furniture;
     @OneToOne()
-    private Reader reader;
+    private Customer customer;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date giveOutDate;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date returnDate;
 
     public History() {
     }
 
-    public History(Book book, Reader reader, Date giveOutDate, Date returnDate) {
-        this.book = book;
-        this.reader = reader;
+    public History(Furniture furniture, Customer customer, Date giveOutDate) {
+        this.furniture = furniture;
+        this.customer = customer;
         this.giveOutDate = giveOutDate;
-        this.returnDate = returnDate;
     }
 
-    public Date getReturnDate() {
-        return returnDate;
+    public Furniture getFurniture() {
+        return furniture;
     }
 
-    public void setReturnDate(Date returnDate) {
-        this.returnDate = returnDate;
+    public void setFurniture(Furniture furniture) {
+        this.furniture = furniture;
     }
 
-    public Book getBook() {
-        return book;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public Reader getReader() {
-        return reader;
-    }
-
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setCustomer(Customer Customer) {
+        this.customer = Customer;
     }
 
     public Date getGiveOutDate() {
@@ -81,16 +70,17 @@ public class History implements Serializable{
     @Override
     public String toString() {
         return "History{" 
-                + "book=" + book.getName()
-                + ", reader=" + reader.getLastname()
+                + "furniture=" + furniture.getKitchenName()
+                + ", Customer=" + customer.getLastname()
                 + ", giveOutDate=" + giveOutDate
-                + ", returnDate=" + returnDate
                 + '}';
     }
 
     public Long getId() {
         return id;
     }
+
+    
 
     public void setId(Long id) {
         this.id = id;
@@ -100,10 +90,9 @@ public class History implements Serializable{
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.book);
-        hash = 67 * hash + Objects.hashCode(this.reader);
+        hash = 67 * hash + Objects.hashCode(this.furniture);
+        hash = 67 * hash + Objects.hashCode(this.customer);
         hash = 67 * hash + Objects.hashCode(this.giveOutDate);
-        hash = 67 * hash + Objects.hashCode(this.returnDate);
         return hash;
     }
 
@@ -122,19 +111,18 @@ public class History implements Serializable{
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.book, other.book)) {
+        if (!Objects.equals(this.furniture, other.furniture)) {
             return false;
         }
-        if (!Objects.equals(this.reader, other.reader)) {
+        if (!Objects.equals(this.customer, other.customer)) {
             return false;
         }
         if (!Objects.equals(this.giveOutDate, other.giveOutDate)) {
             return false;
         }
-        if (!Objects.equals(this.returnDate, other.returnDate)) {
-            return false;
-        }
         return true;
+       
     }
     
 }
+

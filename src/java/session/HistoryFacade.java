@@ -5,9 +5,9 @@
  */
 package session;
 
-import entity.Book;
+import entity.Furniture;
 import entity.History;
-import entity.Reader;
+import entity.Customer;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -32,20 +32,20 @@ public class HistoryFacade extends AbstractFacade<History> {
         super(History.class);
     }
 
-    public List<History> findReadingBooks(Reader reader) {
+    public List<History> findReadingFurnitures(Customer customer) {
         try {
-            return em.createQuery("SELECT h FROM History h WHERE h.returnDate = NULL AND h.reader = :reader")
-                    .setParameter("reader", reader)
+            return em.createQuery("SELECT h FROM History h WHERE h.returnDate = NULL AND h.customer = :customer")
+                    .setParameter("customer", customer)
                     .getResultList();
         } catch (Exception e) {
             return null;
         }
     }
 
-    public List<Book> findPurchasedBook(Reader reader) {
+    public List<Furniture> findPurchasedFurniture(Customer customer) {
         try {
-            return em.createQuery("SELECT h.book FROM History h WHERE h.reader = :reader")
-                    .setParameter("reader", reader)
+            return em.createQuery("SELECT h.book FROM History h WHERE h.customer = :customer")
+                    .setParameter("customer", customer)
                     .getResultList();
         } catch (Exception e) {
             return null;

@@ -31,15 +31,15 @@ public class User implements Serializable{
     private String salt;
  
     @OneToOne
-    private Reader reader;
+    private Customer customer;
 
     public User() {
     }
 
-    public User(String login, String password, String salt, Reader reader) {
+    public User(String login, String password, String salt, Customer customer) {
         this.login = login;
         this.password = password;
-        this.reader = reader;
+        this.customer = customer;
         this.salt = salt;
     }
 
@@ -59,12 +59,12 @@ public class User implements Serializable{
         this.password = password;
     }
 
-    public Reader getReader() {
-        return reader;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
@@ -72,9 +72,9 @@ public class User implements Serializable{
         return "User{" 
                 + "login=" + login 
                 + ", password=" + password 
-                + ", reader=" + reader.getFirstname()
-                + " " + reader.getLastname()
-                + ", money=" + reader.getMoneyStr()
+                + ", customer=" + customer.getFirstname()
+                + " " + customer.getLastname()
+                + ", money=" + customer.getMoneyStr()
                 + '}';
     }
 
@@ -92,7 +92,7 @@ public class User implements Serializable{
         hash = 23 * hash + Objects.hashCode(this.id);
         hash = 23 * hash + Objects.hashCode(this.login);
         hash = 23 * hash + Objects.hashCode(this.password);
-        hash = 23 * hash + Objects.hashCode(this.reader);
+        hash = 23 * hash + Objects.hashCode(this.customer);
         return hash;
     }
 
@@ -117,7 +117,7 @@ public class User implements Serializable{
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.reader, other.reader)) {
+        if (!Objects.equals(this.customer, other.customer)) {
             return false;
         }
         return true;

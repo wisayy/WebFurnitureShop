@@ -5,8 +5,8 @@
  */
 package servlets;
 
-import entity.Book;
-import entity.Reader;
+import entity.Furniture;
+import entity.Customer;
 import entity.Role;
 import entity.User;
 import entity.UserRoles;
@@ -21,9 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import session.BookFacade;
+import session.FurnitureFacade;
 import session.HistoryFacade;
-import session.ReaderFacade;
+import session.CustomerFacade;
 import session.RoleFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
@@ -33,7 +33,7 @@ import session.UserRolesFacade;
  * @author jvm
  */
 @WebServlet(name = "AdminServlet", urlPatterns = {
-    "/listReaders",
+    "/listCustomers",
     "/adminForm",
     "/setRole",
     "/editUser",
@@ -41,9 +41,9 @@ import session.UserRolesFacade;
 })
 public class AdminServlet extends HttpServlet {
 @EJB
-    private BookFacade bookFacade;
+    private FurnitureFacade furnitureFacade;
     @EJB
-    private ReaderFacade readerFacade;
+    private CustomerFacade customerFacade;
     @EJB
     private HistoryFacade historyFacade;
     @EJB
@@ -82,14 +82,14 @@ public class AdminServlet extends HttpServlet {
             return;
         }
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
-        List<Book> basketList = (List<Book>) session.getAttribute("basketList");
+        List<Furniture> basketList = (List<Furniture>) session.getAttribute("basketList");
         if(basketList != null){
             request.setAttribute("basketListCount", basketList.size());
         }
         String path = request.getServletPath();
         switch (path) {
-            case "/listReaders":
-                request.setAttribute("activeListReaders", "true");
+            case "/listCustomers":
+                request.setAttribute("activeListCustomers", "true");
                 List<User> listUsers = userFacade.findAll();
                 Map<User,List<String>> usersMapWithArrayRoles = new HashMap<>();
                 for(User u : listUsers){
@@ -99,7 +99,7 @@ public class AdminServlet extends HttpServlet {
                 
                 request.setAttribute("usersMapWithArrayRoles", usersMapWithArrayRoles);
                 request.setAttribute("usersCount", listUsers.size());
-                request.getRequestDispatcher(LoginServlet.pathToFile.getString("listReaders")).forward(request, response);
+                request.getRequestDispatcher(LoginServlet.pathToFile.getString("listCustomers")).forward(request, response);
                 break;
             case "/adminForm":
                 request.setAttribute("activeAdminPanel", "true");
@@ -151,15 +151,15 @@ public class AdminServlet extends HttpServlet {
                     request.getRequestDispatcher("/editUser").forward(request, response);
                     break;
                 }
-                Reader pReader = readerFacade.find(pUser.getReader().getId());
+                Customer pCustomer = customerFacade.find(pUser.getCustomer().getId());
                 String firstname = request.getParameter("firstname");
-                if(pReader != null && !"".equals(firstname)) pReader.setFirstname(firstname);
+                if(pCustomer != null && !"".equals(firstname)) pCustomer.setFirstname(firstname);
                 String lastname = request.getParameter("lastname");
-                if(pReader != null && !"".equals(lastname)) pReader.setLastname(lastname);
+                if(pCustomer != null && !"".equals(lastname)) pCustomer.setLastname(lastname);
                 String phone = request.getParameter("phone");
-                if(pReader != null && !"".equals(phone)) pReader.setPhone(phone);
+                if(pCustomer != null && !"".equals(phone)) pCustomer.setPhone(phone);
                 String money = request.getParameter("money");
-                if(pReader != null && !"".equals(money)) pReader.setMoney(money);
+                if(pCustomer != null && !"".equals(money)) pCustomer.setMoney(money);
 //                String login = request.getParameter("login");
 //                if(pUser != null && !"".equals(login)) pUser.setLogin(login);
                 String password = request.getParameter("password");
@@ -169,8 +169,8 @@ public class AdminServlet extends HttpServlet {
                     //user.setSalt(salt);
                     
                 }
-                readerFacade.edit(pReader);
-                pUser.setReader(pReader);
+                customerFacade.edit(pCustomer);
+                pUser.setCustomer(pCustomer);
                 userFacade.edit(pUser);
                 request.setAttribute("user", pUser);
                 request.setAttribute("info", "Данные пользователя изменены");

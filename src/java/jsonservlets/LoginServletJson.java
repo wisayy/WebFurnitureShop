@@ -5,8 +5,8 @@
  */
 package jsonservlets;
 
-import entity.Book;
-import entity.Reader;
+import entity.Furniture;
+import entity.Customer;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,9 +24,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import jsoncovertors.JsonBookBuilder;
-import session.BookFacade;
-import session.ReaderFacade;
+import jsoncovertors.JsonFurnitureBuilder;
+import session.FurnitureFacade;
+import session.CustomerFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
 import tools.EncryptPassword;
@@ -44,8 +44,8 @@ import tools.EncryptPassword;
 })
 public class LoginServletJson extends HttpServlet {
     @EJB UserFacade userFacade;
-    @EJB BookFacade bookFacade;
-    @EJB ReaderFacade readerFacade;
+    @EJB FurnitureFacade bookFacade;
+    @EJB CustomerFacade readerFacade;
     @EJB UserRolesFacade userRolesFacade;
     
     @Inject EncryptPassword encryptPassword;
@@ -88,7 +88,7 @@ public class LoginServletJson extends HttpServlet {
                         .toString();
                     break;
                 }
-                Reader reader = new Reader(firstname, lastname, phone, money);
+                Customer reader = new Customer(firstname, lastname, phone, money);
                 readerFacade.create(reader);
                 String salt = encryptPassword.createSalt();
                 password = encryptPassword.createHash(password, salt);
@@ -158,10 +158,10 @@ public class LoginServletJson extends HttpServlet {
                 }
                 break;
             case "/listBooksJson":
-                List<Book> listBooks = bookFacade.findAll();
+                List<Furniture> listBooks = bookFacade.findAll();
                 JsonArrayBuilder jab = Json.createArrayBuilder();
                 listBooks.forEach((book) -> {
-                    jab.add(new JsonBookBuilder().createJsonBook(book));
+                    jab.add(new JsonFurnitureBuilder().createJsonBook(book));
                 });
                 json = jab.build().toString();
                 break;

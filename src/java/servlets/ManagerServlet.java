@@ -5,7 +5,7 @@
  */
 package servlets;
 
-import entity.Book;
+import entity.Furniture;
 import entity.Cover;
 import entity.Text;
 import entity.User;
@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import session.BookFacade;
+import session.FurnitureFacade;
 import session.CoverFacade;
 import session.HistoryFacade;
-import session.ReaderFacade;
+import session.CustomerFacade;
 import session.TextFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
@@ -34,8 +34,8 @@ import tools.SheduleDiscount;
  * @author jvm
  */
 @WebServlet(name = "ManagerServlet", urlPatterns = {
-     "/addBook",
-    "/createBook",
+     "/addFurniture",
+    "/createFurniture",
     "/discountForm",
     "/setDiscount",
    
@@ -44,9 +44,9 @@ import tools.SheduleDiscount;
 })
 public class ManagerServlet extends HttpServlet {
     @EJB
-    private BookFacade bookFacade;
+    private FurnitureFacade furnitureFacade;
     @EJB
-    private ReaderFacade readerFacade;
+    private CustomerFacade customerFacade;
     @EJB
     private HistoryFacade historyFacade;
     @EJB
@@ -90,7 +90,7 @@ public class ManagerServlet extends HttpServlet {
             return;
         }
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
-        List<Book> basketList = (List<Book>) session.getAttribute("basketList");
+        List<Furniture> basketList = (List<Furniture>) session.getAttribute("basketList");
         if(basketList != null){
             request.setAttribute("basketListCount", basketList.size());
         }
@@ -106,19 +106,19 @@ public class ManagerServlet extends HttpServlet {
                         LoginServlet.pathToFile.getString("addBook"))
                         .forward(request, response);
                 break;
-            case "/createBook":
-                String name = request.getParameter("name");
-                String author = request.getParameter("author");
-                String publishedYear = request.getParameter("publishedYear");
-                String isbn = request.getParameter("isbn");
+            case "/createFurniture":
+                String kitchenName = request.getParameter("kitchenName");
+                String material = request.getParameter("material");
+                String width = request.getParameter("width");
+                String height = request.getParameter("height");
                 String price = request.getParameter("price");
                 String coverId = request.getParameter("coverId");
                 String textId = request.getParameter("textId");
                 if(coverId==null || "".equals(coverId)  
-                       || name==null || "".equals(name) 
-                       || author==null || "".equals(author) 
-                       || publishedYear==null || "".equals(publishedYear) 
-                       || isbn==null || "".equals(isbn) 
+                       || kitchenName==null || "".equals(kitchenName) 
+                       || material==null || "".equals(material) 
+                       || width==null || "".equals(width) 
+                       || height==null || "".equals(height) 
                        || price==null|| "".equals(price) 
                        || coverId==null || "".equals(coverId) 
                        || textId==null || "".equals(textId)){
@@ -127,29 +127,29 @@ public class ManagerServlet extends HttpServlet {
                             .forward(request, response);
                 }
                 request.setAttribute("info", 
-                        "Добавлена книга "+name+
-                        ", автор: " + author +
-                        ", год издания: "+ publishedYear
+                        "Добавлена книга "+kitchenName+
+                        ", ширина: " + width +
+                        ", высота: "+ height
                 );
                 Cover cover = coverFacade.find(Long.parseLong(coverId));
                 Text text = textFacade.find(Long.parseLong(textId));
-                Book book = new Book(
-                        name, 
-                        author, 
-                        Integer.parseInt(publishedYear), 
-                        isbn, 
+                Furniture furniture = new Furniture(
+                        kitchenName, 
+                        material, 
+                        width, 
+                        height, 
                         price, 
                         cover,
                         text
                 );
-                bookFacade.create(book);
-                request.getRequestDispatcher("/listBooks")
+                furnitureFacade.create(furniture);
+                request.getRequestDispatcher("/listFurnitures")
                         .forward(request, response);
                 break;
             case "/discountForm":
                 request.setAttribute("activeDiscountForm", "true");
-                List<Book> listBooks = bookFacade.findNotDiscountBook();
-                request.setAttribute("listBooks", listBooks);
+                List<Furniture> listFurnitures = furnitureFacade.findNotDiscountBook();
+                request.setAttribute("listFurnitures", listFurnitures);
                 request.getRequestDispatcher(LoginServlet
                                 .pathToFile
                                 .getString("discountForm")
@@ -157,7 +157,7 @@ public class ManagerServlet extends HttpServlet {
                         .forward(request, response);
                 break;
             case "/setDiscount":
-                String bookId = request.getParameter("bookId");
+                String bookId = request.getParameter("furnitureId");
                 String discount = request.getParameter("discount");
                 String dateDiscount = request.getParameter("dateDiscount");//format yyyy-mm-dd
                 String duration = request.getParameter("duration");
@@ -172,21 +172,21 @@ public class ManagerServlet extends HttpServlet {
                     request.getRequestDispatcher("/discountForm")
                             .forward(request, response);
                 }
-                book = bookFacade.find(Long.parseLong(bookId));
+                furniture = furnitureFacade.find(Long.parseLong(bookId));
                 String year = dateDiscount.substring(0,4);
                 String month = dateDiscount.substring(5,5+2);
                 String day = dateDiscount.substring(8,8+2);
                 Calendar cDateDiscount = new GregorianCalendar(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
                 SheduleDiscount sheduleDiscount = new SheduleDiscount();
-                Book discountBook = sheduleDiscount.setDiscount(
-                        book, 
+                Furniture discountBook = sheduleDiscount.setDiscount(
+                        furniture, 
                         Integer.parseInt(discount),
                         cDateDiscount.getTime(), 
                         Integer.parseInt(duration),
                         durationType
                 );
-                bookFacade.edit(discountBook);
-                request.getRequestDispatcher("/listBooks")
+                furnitureFacade.edit(discountBook);
+                request.getRequestDispatcher("/listFurnitures")
                         .forward(request, response);
                 break;
             
@@ -232,5 +232,4 @@ public class ManagerServlet extends HttpServlet {
     public String getServletInfo() {
         return "Servlet for MANAGER";
     }// </editor-fold>
-
 }

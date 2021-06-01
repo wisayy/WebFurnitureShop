@@ -5,7 +5,7 @@
  */
 package tools;
 
-import entity.Book;
+import entity.Furniture;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -16,7 +16,7 @@ import java.util.Timer;
  * @author jvm
  */
 public class SheduleDiscount {
-    public Book setDiscount(Book book, int discount, Date date, int duration, String durationType){
+    public Furniture setDiscount(Furniture book, int discount, Date date, int duration, String durationType){
         book.setDiscount(discount);
         book.setDiscountDuration(duration);
         Date startDate = DateUtils.getStartOfDay(date); // приведение даты к началу дня

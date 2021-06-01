@@ -5,7 +5,7 @@
  */
 package jsonservlets;
 
-import entity.Book;
+import entity.Furniture;
 import entity.Cover;
 import entity.Text;
 import java.io.File;
@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
-import jsoncovertors.JsonBookBuilder;
-import session.BookFacade;
+import jsoncovertors.JsonFurnitureBuilder;
+import session.FurnitureFacade;
 import session.CoverFacade;
 import session.TextFacade;
 
@@ -43,13 +43,13 @@ import session.TextFacade;
 
 @MultipartConfig()
 @WebServlet(name = "ManagerServletJson", urlPatterns = {
-  "/createBookJson",
+  "/createFurnitureJson",
 
 })
 public class ManagerServletJson extends HttpServlet {
     @EJB private CoverFacade coverFacade;
     @EJB private TextFacade textFacade;
-    @EJB private BookFacade bookFacade;
+    @EJB private FurnitureFacade furnitureFacade;
 
 
     public static final ResourceBundle pathToFile = ResourceBundle.getBundle("property.pathToFile");
@@ -75,7 +75,7 @@ public class ManagerServletJson extends HttpServlet {
     JsonObject jsonObject = null;
     String path = request.getServletPath();
     switch (path) {
-        case "/createBookJson":
+        case "/createFurnitureJson":
             List<Part> fileParts = request
                         .getParts()
                         .stream()
@@ -87,7 +87,7 @@ public class ManagerServletJson extends HttpServlet {
             imagesExtension.add("png");
             imagesExtension.add("gif");
             String fileFolder = "";
-            Book book = null;
+            Furniture furniture = null;
             Cover cover = null;
             Text text = null;
             for(Part filePart : fileParts){
@@ -128,15 +128,15 @@ public class ManagerServletJson extends HttpServlet {
                     .toString();
                 break;   
             }
-            String name = request.getParameter("name");
-            String author = request.getParameter("author");
-            String publishedYear = request.getParameter("publishedYear");
-            String isbn = request.getParameter("isbn");
+            String kitchenName = request.getParameter("kitchenName");
+            String material = request.getParameter("material");
+            String width = request.getParameter("width");
+            String height = request.getParameter("height");
             String price = request.getParameter("price");
-            if(name == null || "".equals(name)
-                  || author == null || "".equals(author)
-                  || publishedYear == null || "".equals(publishedYear)
-                  || isbn == null || "".equals(isbn)
+            if(kitchenName == null || "".equals(kitchenName)
+                  || material == null || "".equals(material)
+                  || width == null || "".equals(width)
+                  || height == null || "".equals(height)
                   || price == null || "".equals(price)
                   ){
                 json=job.add("requestStatus", "false")
@@ -146,12 +146,12 @@ public class ManagerServletJson extends HttpServlet {
 
                 break;   
             }
-        book = new Book(name, author, Integer.parseInt(publishedYear), isbn, price, cover, text);
-        bookFacade.create(book);
-        JsonBookBuilder jbb = new JsonBookBuilder();
-        JsonObject jsonBook = jbb.createJsonBook(book);
+        furniture = new Furniture(kitchenName, material, width, height,  price, cover, text);
+        furnitureFacade.create(furniture);
+        JsonFurnitureBuilder jbb = new JsonFurnitureBuilder();
+        JsonObject jsonBook = jbb.createJsonBook(furniture);
         json=job.add("requestStatus", "true")
-                    .add("info", "Добавлена книга \""+book.getName()+"\".")
+                    .add("info", "Добавлена книга \""+furniture.getKitchenName()+"\".")
                     .add("book", jsonBook.toString())
                     .build()
                     .toString();

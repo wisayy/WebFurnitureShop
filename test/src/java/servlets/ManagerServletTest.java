@@ -5,7 +5,7 @@
  */
 package src.java.servlets;
 
-import entity.Book;
+import entity.Furniture;
 import entity.User;
 import java.io.IOException;
 import java.util.List;
@@ -64,7 +64,7 @@ public class ManagerServletTest extends ManagerServlet {
             return;
         }
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
-        List<Book> basketList = (List<Book>) session.getAttribute("basketList");
+        List<Furniture> basketList = (List<Furniture>) session.getAttribute("basketList");
         if(basketList != null){
             request.setAttribute("basketListCount", basketList.size());
         }

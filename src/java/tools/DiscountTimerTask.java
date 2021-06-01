@@ -5,28 +5,28 @@
  */
 package tools;
 
-import entity.Book;
+import entity.Furniture;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import session.BookFacade;
+import session.FurnitureFacade;
 
 /**
  *
  * @author jvm
  */
 public class DiscountTimerTask extends TimerTask{
-    private Book discountBook;
-    private BookFacade bookFacade;
+    private Furniture discountBook;
+    private FurnitureFacade bookFacade;
 
-    public DiscountTimerTask(Book discountBook) {
+    public DiscountTimerTask(Furniture discountBook) {
         Context ctx;
         try {
             ctx = new InitialContext();
-            this.bookFacade = (BookFacade)ctx.lookup("java:global/WebBooksShop/BookFacade");
+            this.bookFacade = (FurnitureFacade)ctx.lookup("java:global/WebBooksShop/BookFacade");
         } catch (NamingException ex) {
             Logger.getLogger(DiscountTimerTask.class.getName()).log(Level.SEVERE, "Не найден BookFacade", ex);
         }

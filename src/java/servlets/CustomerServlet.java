@@ -5,9 +5,9 @@
  */
 package servlets;
 
-import entity.Book;
+import entity.Furniture;
 import entity.History;
-import entity.Reader;
+import entity.Customer;
 import entity.User;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +27,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import session.BookFacade;
+import session.FurnitureFacade;
 import session.HistoryFacade;
-import session.ReaderFacade;
+import session.CustomerFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
 
@@ -37,21 +37,21 @@ import session.UserRolesFacade;
  *
  * @author Melnikov
  */
-@WebServlet(name = "ReaderServlet", urlPatterns = {
+@WebServlet(name = "CustomerServlet", urlPatterns = {
     "/addToBasket",
-    "/removeBookFromBasket",
+    "/removeFurnitureFromBasket",
     "/showBasket",
-    "/buyBooks",
-    "/purchasedBooks",
+    "/buyFurnitures",
+    "/purchasedFurnitures",
     "/editProfile",
     "/changeProfile",
-    "/readBook",
+    "/readFurniture",
 })
-public class ReaderServlet extends HttpServlet {
+public class CustomerServlet extends HttpServlet {
     @EJB
-    private BookFacade bookFacade;
+    private FurnitureFacade furnitureFacade;
     @EJB
-    private ReaderFacade readerFacade;
+    private CustomerFacade customerFacade;
     @EJB
     private HistoryFacade historyFacade;
     @EJB
@@ -89,111 +89,111 @@ public class ReaderServlet extends HttpServlet {
             return;
         }
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
-        List<Book> basketList = (List<Book>) session.getAttribute("basketList");
+        List<Furniture> basketList = (List<Furniture>) session.getAttribute("basketList");
         if(basketList != null){
             request.setAttribute("basketListCount", basketList.size());
         }
         String path = request.getServletPath();
         switch (path) {
             case "/addToBasket":
-                String bookId = request.getParameter("bookId");
-                if("".equals(bookId) || bookId==null){
+                String furnitureId = request.getParameter("furnitureId");
+                if("".equals(furnitureId) || furnitureId==null){
                     request.setAttribute("info", "Что то пошло не так");
-                    request.getRequestDispatcher("/listBooks").forward(request, response);
+                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
                     break;
                 }
-                Book book = bookFacade.find(Long.parseLong(bookId));
-                basketList = (List<Book>) session.getAttribute("basketList");
+                Furniture furniture = furnitureFacade.find(Long.parseLong(furnitureId));
+                basketList = (List<Furniture>) session.getAttribute("basketList");
                 if(basketList == null) basketList = new ArrayList<>();
-                basketList.add(book);
+                basketList.add(furniture);
                 session.setAttribute("basketList", basketList);
                 request.setAttribute("basketListCount", basketList.size());
-                request.getRequestDispatcher("/listBooks").forward(request, response);
+                request.getRequestDispatcher("/listFurnitures").forward(request, response);
                 break;
-            case "/removeBookFromBasket":
-                bookId = request.getParameter("bookId");
-                if("".equals(bookId) || bookId==null){
+            case "/removeFurnitureFromBasket":
+                furnitureId = request.getParameter("furnitureId");
+                if("".equals(furnitureId) || furnitureId==null){
                     request.setAttribute("info", "Что то пошло не так");
                     request.getRequestDispatcher("/showBasket").forward(request, response);
                     break;
                 }
-                book = bookFacade.find(Long.parseLong(bookId));
-                basketList = (List<Book>) session.getAttribute("basketList");
-                if(basketList.contains(book)){
-                    basketList.remove(book);
+                furniture = furnitureFacade.find(Long.parseLong(furnitureId));
+                basketList = (List<Furniture>) session.getAttribute("basketList");
+                if(basketList.contains(furniture)){
+                    basketList.remove(furniture);
                     session.setAttribute("basketList", basketList);
                 }
                 request.setAttribute("basketListCount", basketList.size());
                 request.getRequestDispatcher("/showBasket").forward(request, response);
                 break;
             case "/showBasket":
-                List<Book> listBooksInBasket = (List<Book>) session.getAttribute("basketList");
+                List<Furniture> listFurnituresInBasket = (List<Furniture>) session.getAttribute("basketList");
                 request.setAttribute("today", new Date());
-                request.setAttribute("listBooksInBasket", listBooksInBasket);
-                if(listBooksInBasket == null || listBooksInBasket.isEmpty()){
-                    request.getRequestDispatcher("/listBooks").forward(request, response);
+                request.setAttribute("listFurnituresInBasket", listFurnituresInBasket);
+                if(listFurnituresInBasket == null || listFurnituresInBasket.isEmpty()){
+                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
                     break;
                 }
                 request.getRequestDispatcher(LoginServlet.pathToFile.getString("showBasket")).forward(request, response);
                 break;
-            case "/buyBooks":
+            case "/buyFurnitures":
                 user = userFacade.find(user.getId());
                 //Получаем список книг в корзине из сессии
-                listBooksInBasket = (List<Book>) session.getAttribute("basketList");
+                listFurnituresInBasket = (List<Furniture>) session.getAttribute("basketList");
                 //Получаем массив отмеченных для покупки книг в корзине или нажатия ссылки при прочтении отрывка
-                String[] selectedBooks = request.getParameterValues("selectedBooks");
-                if(selectedBooks == null){
+                String[] selectedFurnitures = request.getParameterValues("selectedFurnitures");
+                if(selectedFurnitures == null){
                     request.setAttribute("info", "Чтобы купить выберите книгу.");
-                    request.getRequestDispatcher("/listBooks").forward(request, response);
+                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
                     break;
                 }
-                int userMoney = user.getReader().getMoney();
+                int userMoney = user.getCustomer().getMoney();
                 Calendar c = new GregorianCalendar();
-                List<Book> buyBooks = new ArrayList<>();
+                List<Furniture> buyFurnitures = new ArrayList<>();
                 int totalPricePurchase = 0;
                 //Считаем стоимость покупаемых книг, которые отмечены в корзине
-                for(String selectedBookId : selectedBooks){
-                    Book b = bookFacade.find(Long.parseLong(selectedBookId));
+                for(String selectedFurnitureId : selectedFurnitures){
+                    Furniture b = furnitureFacade.find(Long.parseLong(selectedFurnitureId));
                     long today = c.getTimeInMillis();
-                    long bookDiscountDate = b.getDiscountDate().getTime();
-                    if(b.getDiscountDate() != null && today > bookDiscountDate){
+                    long furnitureDiscountDate = b.getDiscountDate().getTime();
+                    if(b.getDiscountDate() != null && today > furnitureDiscountDate){
                         totalPricePurchase += b.getPrice() - b.getPrice()*b.getDiscount()/100;
                     }else{
                         totalPricePurchase += b.getPrice();
                     }
-                    buyBooks.add(b);
+                    buyFurnitures.add(b);
                 }
                 if(userMoney < totalPricePurchase){
                     request.setAttribute("info", "Недостаточно денег для покупки");
-                    request.getRequestDispatcher("/listBooks").forward(request, response);
+                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
                     break;
                 }
                 //Покупаем книгу
-                for(Book buyBook : buyBooks){
-                    if(listBooksInBasket != null) listBooksInBasket.remove(buyBook); //если запрос пришел из корзины - удаляем из корзины купленную книгу
-                    historyFacade.create(new History(buyBook,user.getReader(), new GregorianCalendar().getTime(),null));
+                for(Furniture buyFurniture : buyFurnitures){
+                    if(listFurnituresInBasket != null) listFurnituresInBasket.remove(buyFurniture); //если запрос пришел из корзины - удаляем из корзины купленную книгу
+                    historyFacade.create(new History(buyFurniture,user.getCustomer(), new GregorianCalendar().getTime()));
                 }
                 //Списываем у читателя деньги за купленные книги
-                Reader r = readerFacade.find(user.getReader().getId());
+                Customer r = customerFacade.find(user.getCustomer().getId());
                 r.setMoney(r.getMoney()-totalPricePurchase);
-                readerFacade.edit(r);
+                customerFacade.edit(r);
                 //Редактируем данные вошедшего читателя в сессии
                 User bUser = userFacade.find(user.getId());
                 session.setAttribute("user", bUser);
                 userFacade.edit(bUser);
-                if(listBooksInBasket != null){
+                if(listFurnituresInBasket != null){
                     //есои запрос из корзины
-                    request.setAttribute("listBooksInBasket", listBooksInBasket);
-                    request.setAttribute("basker", listBooksInBasket.size());
+                    request.setAttribute("listFurnituresInBasket", listFurnituresInBasket);
+                    request.setAttribute("basker", listFurnituresInBasket.size());
                 }
-                request.setAttribute("info", "Куплено книг: "+selectedBooks.length);
-                request.getRequestDispatcher("/listBooks").forward(request, response);
+                request.setAttribute("info", "Куплено книг: "+selectedFurnitures.length);
+                request.getRequestDispatcher("/listFurnitures").forward(request, response);
                 break;
-            case "/purchasedBooks":
-                request.setAttribute("activePurchasedBooks", "true");
-                List<Book> purchasedBooks = historyFacade.findPurchasedBook(user.getReader());
-                request.setAttribute("listBooks", purchasedBooks);
-                request.getRequestDispatcher(LoginServlet.pathToFile.getString("purchasedBooks")).forward(request, response);
+            case "/purchasedFurnitures":
+                request.setAttribute("activePurchasedFurnitures", "true");
+                List<Furniture> purchasedFurnitures = historyFacade.findPurchasedFurniture(user.getCustomer());
+                request.setAttribute("listFurnitures", purchasedFurnitures);
+                request.getRequestDispatcher(LoginServlet.pathToFile.getString("purchasedFurnitures")).forward(request, response);
                 break;
             case "/editProfile":
                 user = (User) session.getAttribute("user");
@@ -202,15 +202,15 @@ public class ReaderServlet extends HttpServlet {
                 break;
             case "/changeProfile":
                 User pUser = userFacade.find(user.getId());
-                Reader pReader = readerFacade.find(user.getReader().getId());
+                Customer pCustomer = customerFacade.find(user.getCustomer().getId());
                 String firstname = request.getParameter("firstname");
-                if(pReader != null && !"".equals(firstname)) pReader.setFirstname(firstname);
+                if(pCustomer != null && !"".equals(firstname)) pCustomer.setFirstname(firstname);
                 String lastname = request.getParameter("lastname");
-                if(pReader != null && !"".equals(lastname)) pReader.setLastname(lastname);
+                if(pCustomer != null && !"".equals(lastname)) pCustomer.setLastname(lastname);
                 String phone = request.getParameter("phone");
-                if(pReader != null && !"".equals(phone)) pReader.setPhone(phone);
+                if(pCustomer != null && !"".equals(phone)) pCustomer.setPhone(phone);
                 String money = request.getParameter("money");
-                if(pReader != null && !"".equals(money)) pReader.setMoney(money);
+                if(pCustomer != null && !"".equals(money)) pCustomer.setMoney(money);
 //                String login = request.getParameter("login");
 //                if(pUser != null && !"".equals(login)) pUser.setLogin(login);
                 String password = request.getParameter("password");
@@ -220,38 +220,38 @@ public class ReaderServlet extends HttpServlet {
                     //user.setSalt(salt);
                     
                 }
-                readerFacade.edit(pReader);
-                pUser.setReader(pReader);
+                customerFacade.edit(pCustomer);
+                pUser.setCustomer(pCustomer);
                 userFacade.edit(pUser);
                 session.setAttribute("user", null);//эта строка может быть избыточной
                 session.setAttribute("user", pUser);
                 session.setAttribute("info", "Профиль читателя изменен");
                 request.getRequestDispatcher("/editProfile").forward(request, response);
                 break;
-            case "/readBook":
-                bookId = request.getParameter("bookId");
-                if(bookId == null || "".equals(bookId)){
+            case "/readFurniture":
+                furnitureId = request.getParameter("furnitureId");
+                if(furnitureId == null || "".equals(furnitureId)){
                     request.setAttribute("info","Выберите книгу" );
-                    request.getRequestDispatcher("/purchasedBooks").forward(request, response);
+                    request.getRequestDispatcher("/purchasedFurnitures").forward(request, response);
                 }
-                book = bookFacade.find(Long.parseLong(bookId));
-                List<Book> buyBooksList = historyFacade.findPurchasedBook(user.getReader());
+                furniture = furnitureFacade.find(Long.parseLong(furnitureId));
+                List<Furniture> buyFurnituresList = historyFacade.findPurchasedFurniture(user.getCustomer());
                 try {
-                    File file = new File(book.getText().getPath());
-//                    FileReader fileReader = new FileReader(file);
-//                    BufferedReader reader = new BufferedReader(fileReader);
+                    File file = new File(furniture.getText().getPath());
+//                    FileCustomer fileCustomer = new FileCustomer(file);
+//                    BufferedCustomer customer = new BufferedCustomer(fileCustomer);
                     try (PrintWriter out = response.getWriter()) {
                         out.println("<!DOCTYPE html>");
                         out.println("<html>");
                         out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
                         out.println("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1\" crossorigin=\"anonymous\">");
                         out.println("<head>");
-                        out.println("<title>"+book.getName()+"</title>");            
+                        out.println("<title>"+furniture.getKitchenName()+"</title>");            
                         out.println("</head>");
                         out.println("<body>");
                         out.println("<div class=\"container\">");
                         out.println("<p>");
-                        if(buyBooksList.contains(book)){//если список купленных пользователем книг СОДЕРЖИТ книгу
+                        if(buyFurnituresList.contains(furniture)){//если список купленных пользователем книг СОДЕРЖИТ книгу
                             try(Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8)){
                                 stream.forEachOrdered(line -> out.print(line));
                             }
@@ -267,7 +267,7 @@ public class ReaderServlet extends HttpServlet {
                             }
                             out.println("... ");
                             out.println("<br>");
-                            out.println("<p class=\"w-100 d-flex justify-content-center\"><a href=\"buyBooks?selectedBooks="+book.getId()+"\">(Для продолжения чтения купите книгу).</a></p>");
+                            out.println("<p class=\"w-100 d-flex justify-content-center\"><a href=\"buyFurnitures?selectedFurnitures="+furniture.getId()+"\">(Для продолжения чтения купите книгу).</a></p>");
                             out.println("</p>");
                         }
                         out.println("</p>");
@@ -279,7 +279,7 @@ public class ReaderServlet extends HttpServlet {
                     
                 } catch (Exception e) {
                     request.setAttribute("info", "Невозможно прочесть файл");
-                    request.getRequestDispatcher("/listBooks").forward(request, response);
+                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
                 }
                 break;
         }
