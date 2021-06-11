@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-   <h3 class="w-100 my-5 text-center">Профиль читателя</h3>
+   <h3 class="w-100 my-5 text-center">Профиль покупателя</h3>
     <div class="w-50 d-flex justify-content-center mx-auto">
       <form class="row g-2" action="changeProfile" method="POST">
         <div class="col-md-6">

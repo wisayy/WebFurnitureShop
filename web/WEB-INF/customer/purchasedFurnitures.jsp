@@ -12,11 +12,12 @@
 <div class="w-100 d-flex justify-content-center m-2">
   <c:forEach var="furniture" items="${listFurnitures}">
     <div class="card m-2 border" style="max-width: 12rem; max-height: 25rem">
-        <img src="insertFile/${furniture.cover.path}" class="card-img-top" style="max-width: 12rem; max-height: 15rem" alt="...">
+        <img src="insertFile/${furniture.cover.path}" class="card-img-top" style="max-width: 10rem; max-height: 10rem" alt="...">
         <div class="card-body">
-          <h5 class="card-title">${furniture.name}</h5>
-          <p class="card-text">${furniture.author}</p>
-          <p class="card-text">${furniture.publishedYear}</p>
+          <h5 class="card-title">${furniture.kitchenName}</h5>
+            <p class="card-text m-0">Материал: ${furniture.material}</p>
+            <p class="card-text m-0">Ширина:${furniture.width}</p>
+            <p class="card-text m-0">Высота:${furniture.height}</p>
           <p class="d-inline">
           </p>
         </div>

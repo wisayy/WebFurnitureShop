@@ -25,7 +25,7 @@
                     </td>
                     <td class="m-2">
                         <div class="card mx-auto" style="max-width: 12rem; max-height: 25rem" >
-                          <img src="insertFile/${furniture.cover.path}" class="card-img-top d-block" alt="..." style="min-width: 12rem; min-height: 18rem">
+                          <img src="insertFile/${furniture.cover.path}" class="card-img-top d-block" alt="..." style="min-width: 10rem; min-height: 10rem">
                           <div class="card-body">
                             <div class="card-title">${furniture.kitchenName}</div>
                             <p class="card-text m-0">Материал: ${furniture.material}</p>

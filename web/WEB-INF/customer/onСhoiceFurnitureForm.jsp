@@ -14,9 +14,10 @@
             <img src="insertFile/${furniture.cover.path}" class="card-img d-block" alt="..." style="min-width: 12rem; min-height: 18rem">
         
             <div class="card-body">
-              <div class="card-title">${furniture.name}</div>
-              <div class="card-text">${furniture.author}</div>
-              <div class="card-text">${furniture.publishedYear}</div>
+              <div class="card-title">${furniture.kitchenName}</div>
+                <p class="card-text m-0">Материал: ${furniture.material}</p>
+                <p class="card-text m-0">Ширина: ${furniture.width} см</p>
+                <p class="card-text m-0">Высота: ${furniture.height} см</p>
               <p class="d-flex justify-content-center"> 
                 <a href="addToBasket?furnitureId=${furniture.id}" class=" w-50 text-nowrap">В корзину</a>
               </p>

@@ -153,15 +153,16 @@ public class CustomerServlet extends HttpServlet {
                 int totalPricePurchase = 0;
                 //Считаем стоимость покупаемых книг, которые отмечены в корзине
                 for(String selectedFurnitureId : selectedFurnitures){
-                    Furniture b = furnitureFacade.find(Long.parseLong(selectedFurnitureId));
+                    Furniture furn = furnitureFacade.find(Long.parseLong(selectedFurnitureId));
                     long today = c.getTimeInMillis();
-                    long furnitureDiscountDate = b.getDiscountDate().getTime();
-                    if(b.getDiscountDate() != null && today > furnitureDiscountDate){
-                        totalPricePurchase += b.getPrice() - b.getPrice()*b.getDiscount()/100;
+                    if(furn.getDiscountDate() == null){
+                        totalPricePurchase += furn.getPrice();
                     }else{
-                        totalPricePurchase += b.getPrice();
+                       if( today > furn.getDiscountDate().getTime()){
+                        totalPricePurchase += furn.getPrice() - furn.getPrice()*furn.getDiscount()/100;
                     }
-                    buyFurnitures.add(b);
+                    buyFurnitures.add(furn);
+                }
                 }
                 if(userMoney < totalPricePurchase){
                     request.setAttribute("info", "Недостаточно денег для покупки");
@@ -170,23 +171,25 @@ public class CustomerServlet extends HttpServlet {
                 }
                 //Покупаем книгу
                 for(Furniture buyFurniture : buyFurnitures){
-                    if(listFurnituresInBasket != null) listFurnituresInBasket.remove(buyFurniture); //если запрос пришел из корзины - удаляем из корзины купленную книгу
-                    historyFacade.create(new History(buyFurniture,user.getCustomer(), new GregorianCalendar().getTime()));
+                    if(listFurnituresInBasket != null) {
+                        listFurnituresInBasket.remove(buyFurnitures);
+                        historyFacade.create(new History(buyFurniture,user.getCustomer(), new GregorianCalendar().getTime()));
+                    } //если запрос пришел из корзины - удаляем из корзины купленную книгу
                 }
                 //Списываем у читателя деньги за купленные книги
-                Customer r = customerFacade.find(user.getCustomer().getId());
-                r.setMoney(r.getMoney()-totalPricePurchase);
-                customerFacade.edit(r);
+                Customer cust = customerFacade.find(user.getCustomer().getId());
+                cust.setMoney(cust.getMoney()-totalPricePurchase);
+                customerFacade.edit(cust);
                 //Редактируем данные вошедшего читателя в сессии
-                User bUser = userFacade.find(user.getId());
-                session.setAttribute("user", bUser);
-                userFacade.edit(bUser);
+                User furnUser = userFacade.find(user.getId());
+                session.setAttribute("user", furnUser);
+                userFacade.edit(furnUser);
                 if(listFurnituresInBasket != null){
                     //есои запрос из корзины
                     request.setAttribute("listFurnituresInBasket", listFurnituresInBasket);
                     request.setAttribute("basker", listFurnituresInBasket.size());
                 }
-                request.setAttribute("info", "Куплено кухонной мебели: "+selectedFurnitures.length);
+                request.setAttribute("info", "Куплено кухонная мебели: "+selectedFurnitures.length);
                 request.getRequestDispatcher("/listFurnitures").forward(request, response);
                 break;
             case "/purchasedFurnitures":

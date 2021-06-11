@@ -8,7 +8,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index">Библиотека</a>
+    <a class="navbar-brand" href="index">Магазин кухонной мебели</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -16,32 +16,49 @@
       <div class="navbar-nav w-100 d-flex justify-content-end">
         <c:choose>
             <c:when test="${role eq 'ADMIN'}">
-                <a class="nav-link <c:if test="${activeAddFurniture}">active</c:if>" aria-current="page" href="addFurniture">Добавить кухонную мебель</a>
                 <a class="nav-link <c:if test="${activeListFurnitures}">active</c:if>" href="listFurnitures">Список товара кухонной мебели</a>
                 <a class="nav-link <c:if test="${activePurchasedFurnitures}">active</c:if>" href="purchasedFurnitures">Купленные товары кухонной мебели</a>
-                <a class="nav-link <c:if test="${activeDiscountForms}">active</c:if>" href="discountForm">Скидка</a>
-                <a class="nav-link <c:if test="${activeListCustomers}">active</c:if>" id="listCustomers" href="listCustomers">Список покупателей</a>
-                <a class="nav-link <c:if test="${activeAdminPanel}">active</c:if>" id="adminForm" href="adminForm">Панель администратора</a>
                 <a class="nav-link <c:if test="${activeOut}">active</c:if>" id="logout" href="logout">Выйти</a>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Меню админа
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item <c:if test="${activeAddFurniture}">active</c:if>" aria-current="page" href="addFurniture">Добавить кухонную мебель</a></li>
+                    <li><a class="dropdown-item <c:if test="${activeDiscountForms}">active</c:if>" href="discountForm">Скидка</a></li>
+                    <li><a class="dropdown-item <c:if test="${activeListCustomers}">active</c:if>" id="listCustomers" href="listCustomers">Список покупателей</a></li>
+                    <li><a class="dropdown-item <c:if test="${activeAdminPanel}">active</c:if>" id="adminForm" href="adminForm">Панель администратора</a></li>
+                  </ul>
+                  <a class="navbar-brand" href="#">Баланс: ${user.customer.money/100} €</a>
             </c:when>
             <c:when test="${role eq 'MANAGER'}">
                 <a class="nav-link <c:if test="${activeListFurnitures}">active</c:if>" href="listFurnitures">Список товара кухонной мебели</a>
-                <a class="nav-link <c:if test="${activeDiscountForms}">active</c:if>" href="discountForm">Скидка</a>
                 <a class="nav-link <c:if test="${activePurchasedFurnitures}">active</c:if>" href="purchasedFurnitures">Купленные товары кухонной мебели</a>
-                <a class="nav-link <c:if test="${activeAddFurniture}">active</c:if>" aria-current="page" href="addFurniture">Добавить книгу</a>
-                <a class="nav-link <c:if test="${activeEditProfile}">active</c:if>" href="editProfile">Профиль</a>
                 <a class="nav-link <c:if test="${activeOut}">active</c:if>" href="logout">Выйти</a>
+                  <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Меню менеджера
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="nav-link <c:if test="${activeDiscountForms}">active</c:if>" href="discountForm">Скидка</a></li>
+                    <li><a class="nav-link <c:if test="${activeAddFurniture}">active</c:if>" aria-current="page" href="addFurniture">Добавить кухонную мебель</a></li>
+                    <li><a class="nav-link <c:if test="${activeEditProfile}">active</c:if>" href="editProfile">Изменение профиля</a></li>
+                  </ul>
+                <a class="navbar-brand" href="#">Баланс: ${user.customer.money/100} €</a>
             </c:when>
             <c:when test="${role eq 'CUSTOMER'}">
                 <a class="nav-link <c:if test="${activeListFurnitures}">active</c:if>" href="listFurnitures">Список товара кухонной мебели</a>
                 <a class="nav-link <c:if test="${activePurchasedFurnitures}">active</c:if>" href="purchasedFurnitures">Купленные товары кухонной мебели</a>
                 <a class="nav-link <c:if test="${activeEditProfile}">active</c:if>" href="editProfile">Профиль</a>
                 <a class="nav-link <c:if test="${activeOut}">active</c:if>" href="logout">Выйти</a>
+                <a class="navbar-brand" href="#">Баланс: ${user.customer.money/100} €</a>
+                
             </c:when>
             <c:otherwise>
                 <a class="nav-link <c:if test="${activeListFurnitures}">active</c:if>" href="listFurnitures">Список товара кухонной мебели</a>
                 <a class="nav-link <c:if test="${activeEnter}">active</c:if>" id="loginForm" href="loginForm">Войти</a>
                 <a class="nav-link <c:if test="${activeRegistration}">active</c:if>" href="registrationForm">Регистрация</a>
+                <a class="navbar-brand" href="#">Баланс: ${user.customer.money/100} €</a>
             </c:otherwise>
         </c:choose>
         <c:if test="${basketListCount > 0}">
