@@ -14,16 +14,16 @@ import org.openqa.selenium.WebElement;
  *
  * @author jvm
  */
-public class ListReadersPage {
+public class ListCustomersPage {
     protected WebDriver driver;
-    private final By tablelistreadersBy = By.id("tableListReaders");
+    private final By tablelistfurnituresBy = By.id("tableListFurnitures");
     private final By tagA_By = By.tagName("a");
-    public ListReadersPage(WebDriver driver) {
+    public ListCustomersPage(WebDriver driver) {
         this.driver = driver;
     }
 
     public EditUserPage getEditUserPage(String login) {
-        WebElement table = driver.findElement(tablelistreadersBy);
+        WebElement table = driver.findElement(tablelistfurnituresBy);
         WebElement tr = table.findElement(By.xpath("//tr[td[text()='"+login+"']]"));
         tr.findElement(tagA_By).click();
         return new EditUserPage(driver);

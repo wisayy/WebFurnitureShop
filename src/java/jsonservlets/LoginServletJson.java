@@ -39,13 +39,13 @@ import tools.EncryptPassword;
     "/createUserJson",
     "/loginJson",
     "/logoutJson",
-    "/listBooksJson",
+    "/listFurnituresJson",
     
 })
 public class LoginServletJson extends HttpServlet {
     @EJB UserFacade userFacade;
-    @EJB FurnitureFacade bookFacade;
-    @EJB CustomerFacade readerFacade;
+    @EJB FurnitureFacade furnitureFacade;
+    @EJB CustomerFacade customerFacade;
     @EJB UserRolesFacade userRolesFacade;
     
     @Inject EncryptPassword encryptPassword;
@@ -88,22 +88,22 @@ public class LoginServletJson extends HttpServlet {
                         .toString();
                     break;
                 }
-                Customer reader = new Customer(firstname, lastname, phone, money);
-                readerFacade.create(reader);
+                Customer customer = new Customer(firstname, lastname, phone, money);
+                customerFacade.create(customer);
                 String salt = encryptPassword.createSalt();
                 password = encryptPassword.createHash(password, salt);
-                User user = new User(login, password, salt, reader);
+                User user = new User(login, password, salt, customer);
                 try {
                     userFacade.create(user);
                 } catch (Exception e) {
-                    readerFacade.remove(reader);
+                    customerFacade.remove(customer);
                     json=job.add("requestStatus", "false")
                         .add("info", "Такой пользователь существует")
                         .build()
                         .toString();
                     break;
                 }
-                userRolesFacade.setRole("READER",user);
+                userRolesFacade.setRole("CUSTOMER",user);
                 json=job.add("requestStatus", "true")
                         .add("info", "Пользователь "+user.getLogin()+" успешно создан")
                         .build()
@@ -157,11 +157,11 @@ public class LoginServletJson extends HttpServlet {
                         .toString();
                 }
                 break;
-            case "/listBooksJson":
-                List<Furniture> listBooks = bookFacade.findAll();
+            case "/listFurnituresJson":
+                List<Furniture> listFurnitures = furnitureFacade.findAll();
                 JsonArrayBuilder jab = Json.createArrayBuilder();
-                listBooks.forEach((book) -> {
-                    jab.add(new JsonFurnitureBuilder().createJsonBook(book));
+                listFurnitures.forEach((furniture) -> {
+                    jab.add(new JsonFurnitureBuilder().createJsonFurniture(furniture));
                 });
                 json = jab.build().toString();
                 break;

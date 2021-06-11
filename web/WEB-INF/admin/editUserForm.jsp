@@ -11,19 +11,19 @@
                    <input type="hidden" name="userId" value="${user.id}">
        <div class="col-md-6">
           <label for="firstname" class="form-label">Имя</label>
-          <input type="text" class="form-control" id="firstname" name="firstname" value="${user.reader.firstname}">
+          <input type="text" class="form-control" id="firstname" name="firstname" value="${user.customer.firstname}">
         </div>
         <div class="col-md-6">
           <label for="lastname" class="form-label">Фамилия</label>
-          <input type="text" class="form-control" id="lastname" name="lastname"  value="${user.reader.lastname}">
+          <input type="text" class="form-control" id="lastname" name="lastname"  value="${user.customer.lastname}">
         </div>
         <div class="col-md-6">
           <label for="phone" class="form-label">Телефон</label>
-          <input type="text" class="form-control" id="phone" name="phone"  value="${user.reader.phone}">
+          <input type="text" class="form-control" id="phone" name="phone"  value="${user.customer.phone}">
         </div>
         <div class="col-md-6">
           <label for="money" class="form-label">Деньги</label>
-          <input type="text" class="form-control" id="money" name="money"  value="${user.reader.money/100}">
+          <input type="text" class="form-control" id="money" name="money"  value="${user.customer.money/100}">
         </div>
         <div class="col-md-6">
           <label for="login" class="form-label">Логин</label>

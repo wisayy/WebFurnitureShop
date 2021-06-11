@@ -19,26 +19,26 @@ import session.FurnitureFacade;
  * @author jvm
  */
 public class DiscountTimerTask extends TimerTask{
-    private Furniture discountBook;
-    private FurnitureFacade bookFacade;
+    private Furniture discountFurniture;
+    private FurnitureFacade furnitureFacade;
 
-    public DiscountTimerTask(Furniture discountBook) {
+    public DiscountTimerTask(Furniture discountFurniture) {
         Context ctx;
         try {
             ctx = new InitialContext();
-            this.bookFacade = (FurnitureFacade)ctx.lookup("java:global/WebBooksShop/BookFacade");
+            this.furnitureFacade = (FurnitureFacade)ctx.lookup("java:global/WebFurnituresShop/FurnitureFacade");
         } catch (NamingException ex) {
-            Logger.getLogger(DiscountTimerTask.class.getName()).log(Level.SEVERE, "Не найден BookFacade", ex);
+            Logger.getLogger(DiscountTimerTask.class.getName()).log(Level.SEVERE, "Не найден FurnitureFacade", ex);
         }
-        this.discountBook = discountBook;
+        this.discountFurniture = discountFurniture;
     }
     
     @Override
     public void run() {
-        discountBook.setDiscount(0);
-        discountBook.setDiscountDate(null);
-        discountBook.setDiscountDuration(0);
-        bookFacade.edit(discountBook);
+        discountFurniture.setDiscount(0);
+        discountFurniture.setDiscountDate(null);
+        discountFurniture.setDiscountDuration(0);
+        furnitureFacade.edit(discountFurniture);
     }
     
 }

@@ -65,8 +65,8 @@ public class UserRolesFacade extends AbstractFacade<UserRoles> {
             }
         }
         for(int i=0;i<listUserRoles.size();i++){
-            if("READER".equals(listUserRoles.get(i).getRole().getRoleName())){
-                return "READER";
+            if("CUSTOMER".equals(listUserRoles.get(i).getRole().getRoleName())){
+                return "CUSTOMER";
             }
         }
         return "";
@@ -83,24 +83,24 @@ public class UserRolesFacade extends AbstractFacade<UserRoles> {
             this.create(ur);
             ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("MANAGER"));
             this.create(ur);
-            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("READER"));
+            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("CUSTOMER"));
             this.create(ur);
         }
         if("MANAGER".equals(userRoles.getRole().getRoleName())){
             ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("MANAGER"));
             this.create(ur);
-            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("READER"));
+            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("CUSTOMER"));
             this.create(ur);
         }
-        if("READER".equals(userRoles.getRole().getRoleName())){
-            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("READER"));
+        if("CUSTOMER".equals(userRoles.getRole().getRoleName())){
+            ur = new UserRoles(userRoles.getUser(),roleFacade.findByName("CUSTOMER"));
             this.create(ur);
         }
     }
 
     public List<String> findRoles(User user) {
         List<String> listRoles = new ArrayList<>();
-        listRoles.add("READER");
+        listRoles.add("CUSTOMER");
         listRoles.add("MANAGER"); 
         listRoles.add("ADMIN");
         return listRoles;   

@@ -5,14 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<h3 class="w-100 my-5 text-center">Скидка для книги</h3>
+<h3 class="w-100 my-5 text-center">Скидка для товаров кухонной мебели</h3>
     <div class="w-50 d-flex justify-content-center mx-auto">
     <form action="setDiscount" class="row g-2" method="POST">
         <div class="col-md-6">
-          <label for="listBooks" class="form-label">Выберите книгу</label>
-          <select id="listBooks" name="bookId" class="form-select" >
-              <c:forEach var="book" items="${listBooks}">
-                  <option value="${book.id}">${book.name}. ${book.author}. ${book.publishedYear}</option>
+          <label for="listFurnitures" class="form-label">Выберите товар кухонной мебели</label>
+          <select id="listFurnitures" name="furnitureId" class="form-select" >
+              <c:forEach var="furniture" items="${listFurnitures}">
+                  <option value="${furniture.id}">${furniture.kitchenName}. ${furniture.material}. ${furniture.width}. ${furniture.height}</option>
               </c:forEach>
           </select>
         </div>

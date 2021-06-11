@@ -19,7 +19,7 @@ public class JsonUserBuilder {
         JsonObjectBuilder job = Json.createObjectBuilder();
         job.add("id", user.getId())
                 .add("login", user.getLogin())
-                .add("reader", new JsonCustomerBuilder().createJsonCustomer(user.getCustomer()));
+                .add("customer", new JsonCustomerBuilder().createJsonCustomer(user.getCustomer()));
         return job.build();
     }
 }

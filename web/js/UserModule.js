@@ -109,7 +109,7 @@ class UserModule{
                 </div>
                 <div class="row">
                   <div class="col">
-                    <input type="button" id="btnRegistration" class="form-control my-2 g-2 text-white bg-primary" value="Зарегистрировать">
+                    <input type="button" id="btnRegistration" class="form-control my-2 g-2 text-white bg-dark" value="Зарегистрировать">
                   </div>
                 </div>
           
@@ -163,7 +163,7 @@ class UserModule{
                     {
                       user: { id: 1, 
                               login: 'admin', 
-                              reader:{
+                              customer:{
                                 id=1,
                                 firstname: 'Juri', 
                                 ...}
@@ -173,7 +173,7 @@ class UserModule{
                     {
                       user: { id: 1, 
                               login: 'ivan', 
-                              reader:{
+                              customer:{
                                 id=1,
                                 firstname: 'Иван', 
                                 ...}
@@ -188,9 +188,9 @@ class UserModule{
       let context = document.getElementById('context');
       context.innerHTML='';
       context.insertAdjacentHTML('afterBegin', 
-      `<h3 class="w-100 my-5 text-center">Список читателей</h3>
+      `<h3 class="w-100 my-5 text-center">Список покупателей</h3>
         <p class="">Всего пользователей: ${count}<p>
-        <table id="tableListReaders" class="table table-striped">
+        <table id="tableListCustomers" class="table table-striped">
             <thead>
             <th>№</th>
             <th>Id</th>
@@ -206,7 +206,7 @@ class UserModule{
             <tbody>
             </tbody>
         </table>`);
-        let tbody = document.getElementById('tableListReaders')
+        let tbody = document.getElementById('tableListCustomers')
                             .getElementsByTagName('tbody')[0]; // элементов может быть несколько
         let i = 1;  
         for(let users of result.listUsers){
@@ -219,14 +219,14 @@ class UserModule{
             let td = document.createElement('td');
             if(userField === 'id') userId = users.user[userField];
             if(typeof users.user[userField] === 'object'){
-              for(let readerField in users.user[userField]){
-                if(readerField === 'id') continue;
+              for(let customerField in users.user[userField]){
+                if(customerField === 'id') continue;
                 td = document.createElement('td');
-                if(readerField === 'money'){
-                  td.appendChild(document.createTextNode(users.user[userField][readerField]/100));
+                if(customerField === 'money'){
+                  td.appendChild(document.createTextNode(users.user[userField][customerField]/100));
                   row.appendChild(td);
                 }else{
-                  td.appendChild(document.createTextNode(users.user[userField][readerField]));
+                  td.appendChild(document.createTextNode(users.user[userField][customerField]));
                   row.appendChild(td);
                 }
               }
@@ -245,7 +245,7 @@ class UserModule{
           let span = document.createElement('span');
           span.classList.add('btn');
           span.classList.add('text-white');
-          span.classList.add('bg-primary');
+          span.classList.add('bg-dark');
           span.classList.add('p-2');
           span.appendChild(document.createTextNode('Изменить'));
           span.onclick = function(){userModule.changeUser(userId)};
@@ -283,7 +283,7 @@ class UserModule{
         let result = await response.json();
         document.getElementById('info').innerHTML=result.info;
         let user = result.user;
-        let money = user.reader.money/100;
+        let money = user.customer.money/100;
         document.getElementById('context').innerHTML=
       `<h3 class="w-100 my-5 text-center">Редактирование профиля пользователя</h3>
         <div class="w-100 d-flex justify-content-center m-2">
@@ -291,15 +291,15 @@ class UserModule{
               <div class="row">
                   <div class="col">
                     <input type="hidden" id="userId" value="${user.id}">
-                    <input type="text" id="firstname" class="form-control my-2 g-2" placeholder="Имя" aria-label="Имя" value="${user.reader.firstname}">
+                    <input type="text" id="firstname" class="form-control my-2 g-2" placeholder="Имя" aria-label="Имя" value="${user.customer.firstname}">
                   </div>
                   <div class="col">
-                    <input type="text" id="lastname" class="form-control my-2 g-2" placeholder="Фамилия" aria-label="Фамилия" value="${user.reader.lastname}">
+                    <input type="text" id="lastname" class="form-control my-2 g-2" placeholder="Фамилия" aria-label="Фамилия" value="${user.customer.lastname}">
                   </div>
                 </div>
                 <div class="row">
                   <div class="col">
-                    <input type="text" id="phone" class="form-control my-2 g-2" placeholder="Телефон" aria-label="Телефон" value="${user.reader.phone}">
+                    <input type="text" id="phone" class="form-control my-2 g-2" placeholder="Телефон" aria-label="Телефон" value="${user.customer.phone}">
                   </div>
                   <div class="col">
                     <input type="text" id="money" class="form-control my-2 g-2" placeholder="Деньги" aria-label="Деньги" value="${money}">
@@ -315,7 +315,7 @@ class UserModule{
                 </div>
                 <div class="row">
                   <div class="col">
-                    <input type="button" id="btnChangeUser" class="form-control my-2 g-2 text-white bg-primary" value="Изменить">
+                    <input type="button" id="btnChangeUser" class="form-control my-2 g-2 text-white bg-dark" value="Изменить">
                   </div>
                 </div>
         `;

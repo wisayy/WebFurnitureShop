@@ -45,7 +45,7 @@ import session.UserRolesFacade;
     "/purchasedFurnitures",
     "/editProfile",
     "/changeProfile",
-    "/readFurniture",
+
 })
 public class CustomerServlet extends HttpServlet {
     @EJB
@@ -82,7 +82,7 @@ public class CustomerServlet extends HttpServlet {
             request.getRequestDispatcher("/loginForm").forward(request, response);
             return;
         }
-        boolean isRole = userRolesFacade.isRole("READER",user);
+        boolean isRole = userRolesFacade.isRole("CUSTOMER",user);
         if(!isRole){
             request.setAttribute("info", "У вас нет права использовать этот ресурс. Войдите с соответствующими правами!");
             request.getRequestDispatcher("/loginForm").forward(request, response);
@@ -143,7 +143,7 @@ public class CustomerServlet extends HttpServlet {
                 //Получаем массив отмеченных для покупки книг в корзине или нажатия ссылки при прочтении отрывка
                 String[] selectedFurnitures = request.getParameterValues("selectedFurnitures");
                 if(selectedFurnitures == null){
-                    request.setAttribute("info", "Чтобы купить выберите книгу.");
+                    request.setAttribute("info", "Чтобы купить выберите кухонную мебель.");
                     request.getRequestDispatcher("/listFurnitures").forward(request, response);
                     break;
                 }
@@ -186,7 +186,7 @@ public class CustomerServlet extends HttpServlet {
                     request.setAttribute("listFurnituresInBasket", listFurnituresInBasket);
                     request.setAttribute("basker", listFurnituresInBasket.size());
                 }
-                request.setAttribute("info", "Куплено книг: "+selectedFurnitures.length);
+                request.setAttribute("info", "Куплено кухонной мебели: "+selectedFurnitures.length);
                 request.getRequestDispatcher("/listFurnitures").forward(request, response);
                 break;
             case "/purchasedFurnitures":
@@ -227,60 +227,6 @@ public class CustomerServlet extends HttpServlet {
                 session.setAttribute("user", pUser);
                 session.setAttribute("info", "Профиль читателя изменен");
                 request.getRequestDispatcher("/editProfile").forward(request, response);
-                break;
-            case "/readFurniture":
-                furnitureId = request.getParameter("furnitureId");
-                if(furnitureId == null || "".equals(furnitureId)){
-                    request.setAttribute("info","Выберите книгу" );
-                    request.getRequestDispatcher("/purchasedFurnitures").forward(request, response);
-                }
-                furniture = furnitureFacade.find(Long.parseLong(furnitureId));
-                List<Furniture> buyFurnituresList = historyFacade.findPurchasedFurniture(user.getCustomer());
-                try {
-                    File file = new File(furniture.getText().getPath());
-//                    FileCustomer fileCustomer = new FileCustomer(file);
-//                    BufferedCustomer customer = new BufferedCustomer(fileCustomer);
-                    try (PrintWriter out = response.getWriter()) {
-                        out.println("<!DOCTYPE html>");
-                        out.println("<html>");
-                        out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-                        out.println("<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1\" crossorigin=\"anonymous\">");
-                        out.println("<head>");
-                        out.println("<title>"+furniture.getKitchenName()+"</title>");            
-                        out.println("</head>");
-                        out.println("<body>");
-                        out.println("<div class=\"container\">");
-                        out.println("<p>");
-                        if(buyFurnituresList.contains(furniture)){//если список купленных пользователем книг СОДЕРЖИТ книгу
-                            try(Stream<String> stream = Files.lines(file.toPath(), StandardCharsets.UTF_8)){
-                                stream.forEachOrdered(line -> out.print(line));
-                            }
-                        }else{//если список купленных пользователем книг НЕ СОДЕРЖИТ книгу
-                            try (Stream<String> lines = Files.lines (file.toPath(), StandardCharsets.UTF_8)){
-                                int numLine = 0;
-                                for (String line : (Iterable<String>) lines::iterator)
-                                {
-                                    out.print(line);
-                                    numLine++;
-                                    if(numLine > 200) break;
-                                }
-                            }
-                            out.println("... ");
-                            out.println("<br>");
-                            out.println("<p class=\"w-100 d-flex justify-content-center\"><a href=\"buyFurnitures?selectedFurnitures="+furniture.getId()+"\">(Для продолжения чтения купите книгу).</a></p>");
-                            out.println("</p>");
-                        }
-                        out.println("</p>");
-                        out.println("</div>");
-                        out.println("<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW\" crossorigin=\"anonymous\"></script>");
-                        out.println("</body>");
-                        out.println("</html>");
-                    }
-                    
-                } catch (Exception e) {
-                    request.setAttribute("info", "Невозможно прочесть файл");
-                    request.getRequestDispatcher("/listFurnitures").forward(request, response);
-                }
                 break;
         }
     }

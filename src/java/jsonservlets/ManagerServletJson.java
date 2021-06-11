@@ -7,7 +7,6 @@ package jsonservlets;
 
 import entity.Furniture;
 import entity.Cover;
-import entity.Text;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +33,6 @@ import javax.servlet.http.Part;
 import jsoncovertors.JsonFurnitureBuilder;
 import session.FurnitureFacade;
 import session.CoverFacade;
-import session.TextFacade;
 
 /**
  *
@@ -48,7 +46,6 @@ import session.TextFacade;
 })
 public class ManagerServletJson extends HttpServlet {
     @EJB private CoverFacade coverFacade;
-    @EJB private TextFacade textFacade;
     @EJB private FurnitureFacade furnitureFacade;
 
 
@@ -89,15 +86,12 @@ public class ManagerServletJson extends HttpServlet {
             String fileFolder = "";
             Furniture furniture = null;
             Cover cover = null;
-            Text text = null;
             for(Part filePart : fileParts){
                 String fileName = getFileName(filePart);
                 String fileExtension = fileName.substring(fileName.length()-3, fileName.length());
                 if(imagesExtension.contains(fileExtension)){
 
                     fileFolder = "images";
-                }else{
-                    fileFolder = "texts";
                 }
                 StringBuilder sbFullPathToFile = new StringBuilder();
 
@@ -116,14 +110,12 @@ public class ManagerServletJson extends HttpServlet {
 
                     coverFacade.create(cover);
                 }else{
-                    text = new Text(fileName, sbFullPathToFile.toString());
-                    textFacade.create(text);
                 }
 
             }
-            if(cover == null || text == null){
+            if(cover == null){
                 json=job.add("requestStatus", "false")
-                    .add("info", "Выберите файл обложки и текст книги")
+                    .add("info", "Выберите файл обложки")
                     .build()
                     .toString();
                 break;   
@@ -146,13 +138,13 @@ public class ManagerServletJson extends HttpServlet {
 
                 break;   
             }
-        furniture = new Furniture(kitchenName, material, width, height,  price, cover, text);
+        furniture = new Furniture(kitchenName, material, width, height,  price, cover);
         furnitureFacade.create(furniture);
         JsonFurnitureBuilder jbb = new JsonFurnitureBuilder();
-        JsonObject jsonBook = jbb.createJsonBook(furniture);
+        JsonObject jsonFurniture = jbb.createJsonFurniture(furniture);
         json=job.add("requestStatus", "true")
-                    .add("info", "Добавлена книга \""+furniture.getKitchenName()+"\".")
-                    .add("book", jsonBook.toString())
+                    .add("info", "Добавлена кухонная мебель \""+furniture.getKitchenName()+"\".")
+                    .add("furniture", jsonFurniture.toString())
                     .build()
                     .toString();
         response.setContentType("application/json"); 

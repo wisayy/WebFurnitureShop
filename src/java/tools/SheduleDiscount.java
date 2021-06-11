@@ -16,33 +16,33 @@ import java.util.Timer;
  * @author jvm
  */
 public class SheduleDiscount {
-    public Furniture setDiscount(Furniture book, int discount, Date date, int duration, String durationType){
-        book.setDiscount(discount);
-        book.setDiscountDuration(duration);
+    public Furniture setDiscount(Furniture furniture, int discount, Date date, int duration, String durationType){
+        furniture.setDiscount(discount);
+        furniture.setDiscountDuration(duration);
         Date startDate = DateUtils.getStartOfDay(date); // приведение даты к началу дня
         Date endDate;
         Calendar c = new GregorianCalendar();
         switch (durationType) {
             case "MINUTE":
-                book.setDiscountDate(c.getTime());
+                furniture.setDiscountDate(c.getTime());
                 endDate = DateUtils.plusMinutesToDate(c.getTime(), duration);
                 break;
             case "HOUR":
-                book.setDiscountDate(c.getTime());
+                furniture.setDiscountDate(c.getTime());
                 endDate = DateUtils.plusHoursToDate(c.getTime(), duration);
                 break;
             case "DAY":
-                book.setDiscountDate(startDate);
+                furniture.setDiscountDate(startDate);
                 endDate = DateUtils.plusMinutesToDate(startDate, duration);
                 break;
             default:
-                book.setDiscountDate(startDate);
+                furniture.setDiscountDate(startDate);
                 endDate = DateUtils.plusMinutesToDate(startDate, duration);
         }
         Timer timer = new Timer();
-        DiscountTimerTask discountTimerTask = new DiscountTimerTask(book);
+        DiscountTimerTask discountTimerTask = new DiscountTimerTask(furniture);
         timer.schedule(discountTimerTask, endDate);
-        return book;
+        return furniture;
     }
     
 }

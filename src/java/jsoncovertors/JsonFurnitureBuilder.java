@@ -9,13 +9,14 @@ import entity.Furniture;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 /**
  *
  * @author jvm
  */
 public class JsonFurnitureBuilder {
-    public JsonObject createJsonBook(Furniture furniture){
+    public JsonObject createJsonFurniture(Furniture furniture){
         JsonObjectBuilder job = Json.createObjectBuilder();
         job.add("id", furniture.getId())
                 .add("kitchenName", furniture.getKitchenName())
@@ -24,7 +25,6 @@ public class JsonFurnitureBuilder {
                 .add("height", furniture.getHeight())
                 .add("price", furniture.getPrice())
                 .add("cover", new JsonCoverBuilder().createJsonCover(furniture.getCover()))
-                .add("text", new JsonTextBuilder().createJsonText(furniture.getText()))
                 .add("discount", furniture.getDiscount())
                 .add("discountDuration", furniture.getDiscountDuration());
         if(furniture.getDiscountDate() == null){
@@ -36,3 +36,4 @@ public class JsonFurnitureBuilder {
         return job.build();
     }
 }
+

@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class=" mt-4 m-2 w-100 row">
-            <input type="submit" value="Войти" class="mx-auto col-4 btn-primary" style="width: 16rem">
+            <input type="submit" value="Войти" class="mx-auto col-4" style="background-color: #8c8c8c;" style="width: 16rem">
           </div>
         </form>
     </div>

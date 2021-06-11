@@ -31,7 +31,7 @@ public class AdminPanelPage {
        Select selectUsers = new Select(driver.findElement(useridselectBy)); 
        selectUsers.selectByVisibleText("Juri Melnikov, логин: admin, роль: ADMIN");
        Select selectRoles = new Select(driver.findElement(roleidselectBy)); 
-       selectRoles.selectByVisibleText("READER");
+       selectRoles.selectByVisibleText("CUSTOMER");
        driver.findElement(buttonsubmitBy).click();
     }
     

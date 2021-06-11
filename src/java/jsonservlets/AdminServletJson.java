@@ -64,7 +64,7 @@ public class AdminServletJson extends HttpServlet {
     request.setCharacterEncoding("UTF-8");
     String uploadFolder = LoginServlet.pathToFile.getString("dir");
     String json = null;
-//    JsonReader jsonReader = Json.createReader(request.getReader());
+//    JsonCustomer jsonCustomer = Json.createCustomer(request.getCustomer());
     JsonObjectBuilder job = Json.createObjectBuilder();
     JsonObject jsonObject = null;
     HttpSession session = request.getSession(false);
@@ -110,7 +110,7 @@ public class AdminServletJson extends HttpServlet {
             List<Role> listUserRoles = null;
             /*  [{
                     user:{userJson},
-                    role:"READER"
+                    role:"CUSTOMER"
                 }]
             */
             JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -167,17 +167,17 @@ public class AdminServletJson extends HttpServlet {
                     .toString();
                 break;
             }
-            Customer editReader = editUser.getCustomer();
-            editReader.setFirstname(firstname);
-            editReader.setLastname(lastname);
-            editReader.setMoney(money);
-            editReader.setPhone(phone);
+            Customer editCustomer = editUser.getCustomer();
+            editCustomer.setFirstname(firstname);
+            editCustomer.setLastname(lastname);
+            editCustomer.setMoney(money);
+            editCustomer.setPhone(phone);
            // editUser.setLogin(login);
             if(password != null && !password.isEmpty()){
                 password = ep.createHash(password, editUser.getSalt());
                 editUser.setPassword(password);
             }
-            customerFacade.edit(editReader);
+            customerFacade.edit(editCustomer);
             userFacade.edit(editUser);
             json = job.add("requestStatus", "true")
                       .add("info", "Профиль пользователя "+editUser.getLogin()+" изменен.")

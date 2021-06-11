@@ -1,33 +1,33 @@
 import {authModule} from './AuthModule.js';
-import {bookModule} from './BookModule.js';
+import {furniturekModule} from './FurnitureModule.js';
 import {userModule } from './UserModule.js';
 
 
 document.getElementById("index").onclick = function (){
     toogleMenuActive("index");
     document.getElementById('info').innerHTML='&nbsp;';
-    bookModule.printListBooks();
+    furnitureModule.printListFurnitures();
     
 };
-document.getElementById("addBook").onclick = function (){
-    toogleMenuActive("addBook");
+document.getElementById("addFurniture").onclick = function (){
+    toogleMenuActive("addFurniture");
     document.getElementById('info').innerHTML='&nbsp;';
-    bookModule.printAddBookForm();
+    furnitureModule.printAddFurnitureForm();
     
 };
-document.getElementById("listBooks").onclick = function (){
-    toogleMenuActive("listBooks");
+document.getElementById("listFurnitures").onclick = function (){
+    toogleMenuActive("listFurnitures");
     document.getElementById('info').innerHTML='&nbsp;';
-    bookModule.printListBooks();
+    furnitureModule.printListFurnitures();
 };
-document.getElementById("purchasedBooks").onclick = function (){
-    toogleMenuActive("purchasedBooks");
+document.getElementById("purchasedFurnitures").onclick = function (){
+    toogleMenuActive("purchasedFurnitures");
 };
 document.getElementById("discountForm").onclick = function (){
     toogleMenuActive("discountForm");
 };
-document.getElementById("listReaders").onclick = function (){
-    toogleMenuActive("listReaders");
+document.getElementById("listCustomers").onclick = function (){
+    toogleMenuActive("listCustomers");
     document.getElementById('info').innerHTML='&nbsp;';
     userModule.printListUsers();
 };
@@ -52,7 +52,7 @@ document.getElementById("basket").onclick = function (){
     
 };
 
-bookModule.printListBooks();
+furnitureModule.printListFurnitures();
 authModule.toogleMenu();
 
 function toogleMenuActive(elementId){

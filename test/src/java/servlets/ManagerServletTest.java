@@ -23,8 +23,8 @@ import src.java.session.UserRolesFacadeTest;
  * @author jvm
  */
 @WebServlet(name = "ManagerServletTest",urlPatterns = {
-     "/addBook",
-    "/createBook",
+     "/addFurniture",
+    "/createFurniture",
 })
 public class ManagerServletTest extends ManagerServlet {
     private UserRolesFacadeTest userRolesFacade;
@@ -70,13 +70,13 @@ public class ManagerServletTest extends ManagerServlet {
         }
         String path = request.getServletPath();
         switch (path) {
-            case "/addBook":
-                request.setAttribute("info", "Форма добавления книги");
+            case "/addFurniture":
+                request.setAttribute("info", "Форма добавления кухонной мебели");
                 request.getRequestDispatcher(
-                        LoginServlet.pathToFile.getString("addBook"))
+                        LoginServlet.pathToFile.getString("addFurniture"))
                         .forward(request, response);
                 break;
-            case "/createBook":
+            case "/createFurniture":
                 
                 break;
            

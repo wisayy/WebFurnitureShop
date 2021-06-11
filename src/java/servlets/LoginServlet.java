@@ -43,7 +43,7 @@ import tools.EncryptPassword;
     "/logout",
     "/registrationForm",
     "/createUser",
-    "/listBooks",
+    "/listFurnitures",
 })
 public class LoginServlet extends HttpServlet {
 @EJB
@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
 @EJB
     private CustomerFacade customerFacade;
 @EJB
-    private FurnitureFacade bookFacade;
+    private FurnitureFacade furnitureFacade;
 @EJB private RoleFacade roleFacade;
 @EJB private UserRolesFacade userRolesFacade;
 @EJB private CoverFacade coverFacade;
@@ -79,7 +79,7 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
         roleFacade.create(role);
         userRoles = new UserRoles(user,role);
         userRolesFacade.create(userRoles);
-        role = new Role("READER");
+        role = new Role("CUSTOMER");
         roleFacade.create(role);
         userRoles = new UserRoles(user,role);
         userRolesFacade.create(userRoles);
@@ -101,7 +101,7 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
-        List<Furniture> purchasedBooks = null;
+        List<Furniture> purchasedFurnitures = null;
         HttpSession session = request.getSession(false);
         User user=null;
         if(session != null){
@@ -110,7 +110,7 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
             if(basketList != null){
                 request.setAttribute("basketListCount", basketList.size());
             }
-            if(user != null) purchasedBooks = historyFacade.findPurchasedFurniture(user.getCustomer());
+            if(user != null) purchasedFurnitures = historyFacade.findPurchasedFurniture(user.getCustomer());
         }
         
         request.setAttribute("role", userRolesFacade.getTopRoleForUser(user));
@@ -118,8 +118,8 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
         String path = request.getServletPath();
         switch (path) {
             case "/index":
-                List<Furniture> listBooks = bookFacade.findAll();
-                request.setAttribute("listBooks", listBooks);
+                List<Furniture> listFurnitures = furnitureFacade.findAll();
+                request.setAttribute("listFurnitures", listFurnitures);
                 request.getRequestDispatcher(LoginServlet.pathToFile.getString("index")).forward(request, response);
                 break;
             case "/loginForm":
@@ -194,7 +194,7 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
                 user = new User(login, encryptPwd, salt, customer);
                 userFacade.create(user);
                 //Здесь добавим роль пользователю.
-                Role roleCustomer = roleFacade.findByName("READER");
+                Role roleCustomer = roleFacade.findByName("CUSTOMER");
                 UserRoles userRoles = new UserRoles(user, roleCustomer);
                 userRolesFacade.create(userRoles);
                 request.setAttribute("info", 
@@ -202,21 +202,21 @@ public static final ResourceBundle pathToFile = ResourceBundle.getBundle("proper
                 );
                 request.getRequestDispatcher("/index").forward(request, response);
                 break; 
-            case "/listBooks":
-                request.setAttribute("activeListBook", "true");
+            case "/listFurnitures":
+                request.setAttribute("activeListFurniture", "true");
                 request.setAttribute("today", new Date());
-                listBooks = null;
+                listFurnitures = null;
                 try {
-                    listBooks = bookFacade.findAll();
-                    if(purchasedBooks != null){
-                        listBooks.removeAll(purchasedBooks);
+                    listFurnitures = furnitureFacade.findAll();
+                    if(purchasedFurnitures != null){
+                        listFurnitures.removeAll(purchasedFurnitures);
                     }
                 } catch (Exception e) {
-                    listBooks = new ArrayList<>();
+                    listFurnitures = new ArrayList<>();
                 }
                 
-                request.setAttribute("listBooks", listBooks);
-                request.getRequestDispatcher(LoginServlet.pathToFile.getString("listBooks")).forward(request, response);
+                request.setAttribute("listFurnitures", listFurnitures);
+                request.getRequestDispatcher(LoginServlet.pathToFile.getString("listFurnitures")).forward(request, response);
                 break;    
         }
     }

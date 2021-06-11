@@ -33,8 +33,6 @@ public class Furniture implements Serializable{
     private Integer price;
     @OneToOne
     private Cover cover;
-    @OneToOne
-    private Text text;
     private int discount;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date discountDate;
@@ -45,24 +43,22 @@ public class Furniture implements Serializable{
     public Furniture() {
     }
 
-    public Furniture(String kitchenName, String material, String width, String height, Integer price, Cover cover, Text text) {
+    public Furniture(String kitchenName, String material, String width, String height, Integer price, Cover cover) {
         this.kitchenName = kitchenName;
         this.material = material;
         this.width = width;
         this.height = height;
         this.price = price;
         this.cover = cover;
-        this.text = text;
     }
 
-    public Furniture(String kitchenName, String material, String width, String height, String price, Cover cover, Text text) {
+    public Furniture(String kitchenName, String material, String width, String height, String price, Cover cover) {
         this.kitchenName = kitchenName;
         this.material = material;
         this.width = width;
         this.height = height;
         this.setPriceStr(price);
         this.cover = cover;
-        this.text = text;
     }
 
     public String getKitchenName() {
@@ -154,9 +150,6 @@ public class Furniture implements Serializable{
         if (!Objects.equals(this.cover, other.cover)) {
             return false;
         }
-        if (!Objects.equals(this.text, other.text)) {
-            return false;
-        }
         if (!Objects.equals(this.discountDate, other.discountDate)) {
             return false;
         }
@@ -200,14 +193,6 @@ public class Furniture implements Serializable{
         this.price = price;
     }
 
-    public Text getText() {
-        return text;
-    }
-
-    public void setText(Text text) {
-        this.text = text;
-    }
-
     public int getDiscount() {
         return discount;
     }
@@ -236,7 +221,7 @@ public class Furniture implements Serializable{
     
     @Override
     public String toString() {
-        return "Book{" 
+        return "Furniture{" 
                 + "id=" + id 
                 + ", kitchenName=" + kitchenName 
                 + ", material=" + material 

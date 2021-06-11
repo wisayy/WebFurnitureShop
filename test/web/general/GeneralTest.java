@@ -99,7 +99,7 @@ public class GeneralTest {
     
     public void changeUserProfile(String login, boolean allowed){
         System.out.println("changeUserProfile("+login+","+allowed+"): ");
-        menuPage.getListReadersPage().getEditUserPage(login).changeUserProfile();
+        menuPage.getListCustomersPage().getEditUserPage(login).changeUserProfile();
         String result = menuPage.getMessageInfo().trim();
         String expected = "Данные пользователя изменены";
         System.out.println("    Expected: "+ expected);

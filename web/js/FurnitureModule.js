@@ -1,38 +1,38 @@
-class BookModule{
-  printAddBookForm(){
+class FurnitureModule{
+  printAddFurnitureForm(){
     document.getElementById('context').innerHTML=
-     `<h3 class="w-100 text-center my-5 ">Добавить новую книгу</h3>
-      <form id="bookForm" method="POST" enctype="multipart/form-data">
+     `<h3 class="w-100 text-center my-5 ">Добавить новую кухонную мебель</h3>
+      <form id="furnitureForm" method="POST" enctype="multipart/form-data">
         <div class="row w-50 my-2 mx-auto">
         <div class="col-4 text-end">
-            Название книги 
+            Название кухонной мебели 
         </div>
         <div class="col-8 text-start ">
-          <input class="w-100" type="text" name="name" id="name">
+          <input class="w-100" type="text" name="kitchenName" id="kitchenName">
         </div>
       </div>
       <div class="row w-50 my-2 mx-auto">
         <div class="col-4 text-end">
-          Автор книги 
+          Материал
         </div>
         <div class="col-8 text-start">  
-          <input class="col-8" type="text" name="author" id="author">
+          <input class="col-8" type="text" name="material" id="material">
         </div>
       </div>
       <div class="row w-50 my-2 mx-auto">
         <div class="col-4 text-end">   
-            Год издания книги 
+            Ширина
         </div>
         <div class="col-8 text-start">  
-          <input class="col-4" type="text" name="publishedYear" id="publishedYear">
+          <input class="col-4" type="text" name="width" id="width">
         </div>
       </div>
       <div class="row w-50 my-2 mx-auto">
         <div class="col-4 text-end">   
-            ISBN: 
+            Высота 
         </div>
         <div class="col-8 text-start">  
-          <input class="col-8" type="text" name="isbn" id="isbn">
+          <input class="col-8" type="text" name="height" id="height">
         </div>
       </div>
       <div class="row w-50 my-2 mx-auto">
@@ -64,37 +64,37 @@ class BookModule{
              
         </div>
         <div class="col-8 text-start mt-3">     
-          <input class="w-50 bg-primary text-white" type="submit" name="submit" value="Добавить">
+          <input class="w-50 bg-dark text-white" type="submit" name="submit" value="Добавить">
         </div>
       </div>
     </form>`;
-    document.getElementById('bookForm').onsubmit = function(e){
+    document.getElementById('furnitureForm').onsubmit = function(e){
       e.preventDefault();
-      bookModule.createBook();
+      furnitureModule.createFurniture();
     }
   }
-  async createBook(){
-    let response = await fetch('createBookJson',{
+  async createFurniture(){
+    let response = await fetch('createFurnitureJson',{
       method: 'POST',
-      body: new FormData(document.getElementById('bookForm'))
+      body: new FormData(document.getElementById('furnitureForm'))
     })
     if((response).ok){
       const result = await response.json();
       document.getElementById('info').innerHTML = result.info;
-      bookModule.printListBooks();
+      furnitureModule.printListFurnitures();
     }else{
       document.getElementById('info').innerHTML='Ошибка сервера';
     }
   }
-  async printListBooks(){
-    const listBooks = await bookModule.getListBooks();
+  async printListFurnitures(){
+    const listFurnitures = await furnitureModule.getListFurnitures();
     let context = document.getElementById('context');
-    context.innerHTML = '<h3 class="w-100 my-5 text-center">Список книг</h3>';
+    context.innerHTML = '<h3 class="w-100 my-5 text-center">Список кухонной мебели</h3>';
     let divForCarts = document.createElement('div');
     divForCarts.classList.add('w-100');
     divForCarts.classList.add('d-flex')
     divForCarts.classList.add('justify-content-center');
-    for(let book of listBooks){
+    for(let furniture of listFurnitures){
       let cart = document.createElement('div');
       cart.classList.add('card');
       cart.classList.add('m-2');
@@ -103,17 +103,17 @@ class BookModule{
       let img = document.createElement('img');
       img.classList.add('card-img-top');
       img.style.cssText=`max-width: 12rem; max-height: 15rem`;
-      img.setAttribute('src',`insertFile/${book.cover.path}`);
+      img.setAttribute('src',`insertFile/${furniture.cover.path}`);
       cart.insertAdjacentElement('beforeEnd',img);
       cart.insertAdjacentHTML('beforeend',
                   ` <div class="card-body">
-                      <h5 class="card-title m-0">${book.name}</h5>
-                      <p class="card-text m-0">${book.author}</p>
-                      <p class="card-text m-0">${book.publishedYear}</p>
-                      <p class="card-text m-0">${book.price/100} EUR</p>
+                      <h5 class="card-title m-0">${furniture.name}</h5>
+                      <p class="card-text m-0">${furniture.author}</p>
+                      <p class="card-text m-0">${furniture.publishedYear}</p>
+                      <p class="card-text m-0">${furniture.price/100} EUR</p>
                       <p class="d-inline">
-                        <a href="readBook?bookId=${book.id}" class="link text-nowrap">Читать</a>
-                        <a href="addToBasket?bookId=${book.id}" class="link text-nowrap">В корзину</a>
+                        <a href="readFurniture?furnitureId=${furniture.id}" class="link text-nowrap">Читать</a>
+                        <a href="addToBasket?furnitureId=${furniture.id}" class="link text-nowrap">В корзину</a>
                       </p>
                     </div>`
                     );
@@ -123,8 +123,8 @@ class BookModule{
     context.insertAdjacentElement('beforeend',divForCarts);
 
   }
-  async getListBooks(){
-    let response = await fetch('listBooksJson',{
+  async getListFurnitures(){
+    let response = await fetch('listFurnituresJson',{
       method: 'GET',
       headers: {
         'Content-Type': 'application/json;charset=utf8'
@@ -139,5 +139,5 @@ class BookModule{
     }
   }
 }
-const bookModule = new BookModule();
-export {bookModule};
+const furnitureModule = new FurnitureModule();
+export {furnitureModule};

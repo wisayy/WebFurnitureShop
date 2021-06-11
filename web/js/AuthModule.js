@@ -1,4 +1,4 @@
-import { bookModule } from './BookModule.js';
+import { furnitureModule } from './FurnitureModule.js';
 import {userModule} from './UserModule.js';
 class AuthModule{
     printLoginForm(){
@@ -18,7 +18,7 @@ class AuthModule{
                 </div>
               </div>
               <div class=" mt-4 m-2 w-100 row">
-                <input type="button" id="btnEnter" value="Войти" class="mx-auto col-4 btn-primary" style="width: 16rem">
+                <input type="button" id="btnEnter" value="Войти" class="mx-auto col-4" style="width: 16rem" style="background-color: #909091;">
               </div>
               <div class=" m-0 w-100 row">
                 <a class="mx-auto text-center" id="registration-link" href="#registration">Регистрация</a>
@@ -50,7 +50,7 @@ class AuthModule{
         document.getElementById('info').innerHTML=result.info;
         console.log("Request status: "+result.requestStatus);
         document.getElementById('context').innerHTML='';
-        bookModule.printListBooks();
+        furnitureModule.printListFurnitures();
         if(result.requestStatus){
           sessionStorage.setItem('token',JSON.stringify(result.token));
           sessionStorage.setItem('role',JSON.stringify(result.role));
@@ -79,7 +79,7 @@ class AuthModule{
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('role');
           document.getElementById('info').innerHTML=result.info;
-          bookModule.printListBooks();
+          furnitureModule.printListFurnitures();
       }
       authModule.toogleMenu();
 
@@ -93,43 +93,43 @@ class AuthModule{
       console.log('Auth: role - '+sessionStorage.getItem('role'));
       
       if(role===null){
-        document.getElementById("listBooks").style.display = 'block';
+        document.getElementById("listFurnitures").style.display = 'block';
         document.getElementById("loginForm").style.display = 'block';
         document.getElementById("logout").style.display = 'none';
-        document.getElementById("addBook").style.display = 'none';
-        document.getElementById("purchasedBooks").style.display = 'none';
+        document.getElementById("addFurniture").style.display = 'none';
+        document.getElementById("purchasedFurnitures").style.display = 'none';
         document.getElementById("discountForm").style.display = 'none';
-        document.getElementById("listReaders").style.display = 'none';
+        document.getElementById("listCustomers").style.display = 'none';
         document.getElementById("adminForm").style.display = 'none';
         document.getElementById("basket").style.display = 'none';
-      }else if(role==="READER"){
-        document.getElementById("listBooks").style.display = 'block';
+      }else if(role==="CUSTOMER"){
+        document.getElementById("listFurnitures").style.display = 'block';
         document.getElementById("loginForm").style.display = 'none';
         document.getElementById("logout").style.display = 'block';
-        document.getElementById("addBook").style.display = 'none';
-        document.getElementById("purchasedBooks").style.display = 'block';
+        document.getElementById("addFurniture").style.display = 'none';
+        document.getElementById("purchasedFurnitures").style.display = 'block';
         document.getElementById("discountForm").style.display = 'none';
-        document.getElementById("listReaders").style.display = 'none';
+        document.getElementById("listCustomers").style.display = 'none';
         document.getElementById("adminForm").style.display = 'none';
         document.getElementById("basket").style.display = 'block';
       }else if(role==="MANAGER"){
-        document.getElementById("listBooks").style.display = 'block';
+        document.getElementById("listFurnitures").style.display = 'block';
         document.getElementById("loginForm").style.display = 'none';
         document.getElementById("logout").style.display = 'block';
-        document.getElementById("addBook").style.display = 'block';
-        document.getElementById("purchasedBooks").style.display = 'block';
+        document.getElementById("addFurniture").style.display = 'block';
+        document.getElementById("purchasedFurnitures").style.display = 'block';
         document.getElementById("discountForm").style.display = 'block';
-        document.getElementById("listReaders").style.display = 'none';
+        document.getElementById("listCustomers").style.display = 'none';
         document.getElementById("adminForm").style.display = 'none';
         document.getElementById("basket").style.display = 'block';
       }else if(role==="ADMIN"){
-        document.getElementById("listBooks").style.display = 'block';
+        document.getElementById("listFurnitures").style.display = 'block';
         document.getElementById("loginForm").style.display = 'none';
         document.getElementById("logout").style.display = 'block';
-        document.getElementById("addBook").style.display = 'block';
-        document.getElementById("purchasedBooks").style.display = 'block';
+        document.getElementById("addFurniture").style.display = 'block';
+        document.getElementById("purchasedFurnitures").style.display = 'block';
         document.getElementById("discountForm").style.display = 'block';
-        document.getElementById("listReaders").style.display = 'block';
+        document.getElementById("listCustomers").style.display = 'block';
         document.getElementById("adminForm").style.display = 'block';
         document.getElementById("basket").style.display = 'block';
       }

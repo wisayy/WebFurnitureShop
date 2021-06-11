@@ -7,7 +7,6 @@ package servlets;
 
 import entity.Furniture;
 import entity.Cover;
-import entity.Text;
 import entity.User;
 import java.io.IOException;
 import java.util.Calendar;
@@ -24,7 +23,6 @@ import session.FurnitureFacade;
 import session.CoverFacade;
 import session.HistoryFacade;
 import session.CustomerFacade;
-import session.TextFacade;
 import session.UserFacade;
 import session.UserRolesFacade;
 import tools.SheduleDiscount;
@@ -34,7 +32,7 @@ import tools.SheduleDiscount;
  * @author jvm
  */
 @WebServlet(name = "ManagerServlet", urlPatterns = {
-     "/addFurniture",
+    "/addFurniture",
     "/createFurniture",
     "/discountForm",
     "/setDiscount",
@@ -53,7 +51,6 @@ public class ManagerServlet extends HttpServlet {
     private UserFacade userFacade;
     @EJB private UserRolesFacade userRolesFacade;
     @EJB private CoverFacade coverFacade;
-    @EJB private TextFacade textFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -96,14 +93,12 @@ public class ManagerServlet extends HttpServlet {
         }
         String path = request.getServletPath();
         switch (path) {
-            case "/addBook":
+            case "/addFurniture":
                 List<Cover> listCovers = coverFacade.findAll();
-                List<Text> listTexts = textFacade.findAll();
                 request.setAttribute("listCovers", listCovers);
-                request.setAttribute("listTexts", listTexts);
-                request.setAttribute("activeAddBook", "true");
+                request.setAttribute("activeAddFurniture", "true");
                 request.getRequestDispatcher(
-                        LoginServlet.pathToFile.getString("addBook"))
+                        LoginServlet.pathToFile.getString("addFurniture"))
                         .forward(request, response);
                 break;
             case "/createFurniture":
@@ -113,34 +108,30 @@ public class ManagerServlet extends HttpServlet {
                 String height = request.getParameter("height");
                 String price = request.getParameter("price");
                 String coverId = request.getParameter("coverId");
-                String textId = request.getParameter("textId");
                 if(coverId==null || "".equals(coverId)  
                        || kitchenName==null || "".equals(kitchenName) 
                        || material==null || "".equals(material) 
                        || width==null || "".equals(width) 
                        || height==null || "".equals(height) 
                        || price==null|| "".equals(price) 
-                       || coverId==null || "".equals(coverId) 
-                       || textId==null || "".equals(textId)){
+                       || coverId==null || "".equals(coverId)){
                     request.setAttribute("info", "Выберите файл обложки");
-                    request.getRequestDispatcher("/addBook")
+                    request.getRequestDispatcher("/addFurniture")
                             .forward(request, response);
                 }
                 request.setAttribute("info", 
-                        "Добавлена книга "+kitchenName+
+                        "Добавлена кухонная мебель "+kitchenName+
                         ", ширина: " + width +
                         ", высота: "+ height
                 );
                 Cover cover = coverFacade.find(Long.parseLong(coverId));
-                Text text = textFacade.find(Long.parseLong(textId));
                 Furniture furniture = new Furniture(
                         kitchenName, 
                         material, 
                         width, 
                         height, 
                         price, 
-                        cover,
-                        text
+                        cover
                 );
                 furnitureFacade.create(furniture);
                 request.getRequestDispatcher("/listFurnitures")
@@ -148,7 +139,7 @@ public class ManagerServlet extends HttpServlet {
                 break;
             case "/discountForm":
                 request.setAttribute("activeDiscountForm", "true");
-                List<Furniture> listFurnitures = furnitureFacade.findNotDiscountBook();
+                List<Furniture> listFurnitures = furnitureFacade.findNotDiscountFurniture();
                 request.setAttribute("listFurnitures", listFurnitures);
                 request.getRequestDispatcher(LoginServlet
                                 .pathToFile
@@ -157,12 +148,12 @@ public class ManagerServlet extends HttpServlet {
                         .forward(request, response);
                 break;
             case "/setDiscount":
-                String bookId = request.getParameter("furnitureId");
+                String furnitureId = request.getParameter("furnitureId");
                 String discount = request.getParameter("discount");
                 String dateDiscount = request.getParameter("dateDiscount");//format yyyy-mm-dd
                 String duration = request.getParameter("duration");
                 String durationType = request.getParameter("durationType");
-                if(bookId==null || "".equals(bookId)  
+                if(furnitureId==null || "".equals(furnitureId)  
                        || discount==null || "".equals(discount) 
                        || dateDiscount==null || "".equals(dateDiscount) 
                        || duration==null || "".equals(duration) 
@@ -172,20 +163,20 @@ public class ManagerServlet extends HttpServlet {
                     request.getRequestDispatcher("/discountForm")
                             .forward(request, response);
                 }
-                furniture = furnitureFacade.find(Long.parseLong(bookId));
+                furniture = furnitureFacade.find(Long.parseLong(furnitureId));
                 String year = dateDiscount.substring(0,4);
                 String month = dateDiscount.substring(5,5+2);
                 String day = dateDiscount.substring(8,8+2);
                 Calendar cDateDiscount = new GregorianCalendar(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
                 SheduleDiscount sheduleDiscount = new SheduleDiscount();
-                Furniture discountBook = sheduleDiscount.setDiscount(
+                Furniture discountFurniture = sheduleDiscount.setDiscount(
                         furniture, 
                         Integer.parseInt(discount),
                         cDateDiscount.getTime(), 
                         Integer.parseInt(duration),
                         durationType
                 );
-                furnitureFacade.edit(discountBook);
+                furnitureFacade.edit(discountFurniture);
                 request.getRequestDispatcher("/listFurnitures")
                         .forward(request, response);
                 break;

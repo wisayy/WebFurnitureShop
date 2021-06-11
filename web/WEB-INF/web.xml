@@ -12,7 +12,7 @@
         <jsp-property-group>
             <display-name>template1</display-name>
             <url-pattern>/WEB-INF/admin/*</url-pattern>
-            <url-pattern>/WEB-INF/reader/*</url-pattern>
+            <url-pattern>/WEB-INF/customer/*</url-pattern>
             <url-pattern>/WEB-INF/manager/*</url-pattern>
             <url-pattern>/WEB-INF/guest/*</url-pattern>
             <url-pattern>/index.jsp</url-pattern>
